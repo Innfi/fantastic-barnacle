@@ -1,0 +1,51 @@
+name: basic-backend workflow
+on:
+  push:
+    branches:
+      - release
+    paths:
+      - "./github/workflows/action.basic-backend.yaml"
+      - "./basic-backend"
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./basic-backend
+    steps:
+      - name: baseline
+        uses: actions/checkout@v3
+        uses: actions/setup-node@4
+        with:
+          node-version: 20.x
+          cache: 'npm'
+          chache-dependency-path: cache/package-lock.json
+
+      - name: build
+        run: npm build
+
+  docker:
+    name: docker
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./basic-backend
+    steps:
+      - name: docker buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: login
+        uses: docker/login-action@v3
+        with: 
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: build and push
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          tags:  innfi/basic-backend:latest
+
+
