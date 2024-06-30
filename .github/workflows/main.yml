@@ -4,7 +4,7 @@ on:
     branches:
       - main
     paths:
-      - '.github/workflows/main.yaml'
+      - '.github/workflows/main.yml'
       - 'basic-backend/**'
 
 jobs:
