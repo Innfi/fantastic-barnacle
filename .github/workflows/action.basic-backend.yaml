@@ -2,10 +2,10 @@ name: basic-backend workflow
 on:
   push:
     branches:
-      - release
+      - 'release'
     paths:
-      - "./.github/workflows/action.basic-backend.yaml"
-      - "./basic-backend"
+      - '.github/workflows/action.basic-backend.yaml'
+      - 'basic-backend/**'
 
 jobs:
   build:
