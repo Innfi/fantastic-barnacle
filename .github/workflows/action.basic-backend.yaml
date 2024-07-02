@@ -23,6 +23,9 @@ jobs:
           cache: npm
           cache-dependency-path: './basic-backend/'
 
+      - name: install
+        run: npm install
+
       - name: build
         run: npm run build
 
@@ -45,8 +48,7 @@ jobs:
       - name: build and push
         uses: docker/build-push-action@v6
         with:
-          file: ./basic-backend/Dockerfile
-          context: ./basic-backend
+          context: "{{defaultContext}}:basic-backend"
           push: true
           tags:  innfi/basic-backend:latest
 
