@@ -10,7 +10,7 @@ import { QueueReceiver } from './receiver';
     BullModule.forRoot({
       connection: {
         // FIXME: read connection data from env
-        host: 'localhost',
+        host: 'redis-compose',
         port: 6379
       },
     }),
