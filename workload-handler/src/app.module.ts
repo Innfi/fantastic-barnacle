@@ -3,6 +3,7 @@ import { BullModule } from '@nestjs/bullmq';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { QueueReceiver } from './receiver';
 
 @Module({
   imports: [
@@ -18,6 +19,6 @@ import { AppService } from './app.service';
     }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, QueueReceiver],
 })
 export class AppModule {}
