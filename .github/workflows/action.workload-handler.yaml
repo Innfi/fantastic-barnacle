@@ -1,9 +1,9 @@
-name: basic-backend action
+name: workload-handler action
 on:
   push:
     paths:
-      - '.github/workflows/action.basic-backend.yaml'
-      - 'basic-backend/**'
+      - '.github/workflows/action.workload-handler.yaml'
+      - 'workload-handler/**'
 
 jobs:
   build:
@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./basic-backend/
+        working-directory: ./workload-handler/
     steps:
       - name: baseline
         uses: actions/checkout@v3
@@ -21,7 +21,7 @@ jobs:
         with:
           node-version: 20.x
           cache: npm
-          cache-dependency-path: './basic-backend/'
+          cache-dependency-path: './workload-handler/'
 
       - name: install
         run: npm install
@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./basic-backend
+        working-directory: ./workload-handler
     steps:
       - name: docker buildx
         uses: docker/setup-buildx-action@v3
@@ -48,6 +48,6 @@ jobs:
       - name: build and push
         uses: docker/build-push-action@v6
         with:
-          context: "{{defaultContext}}:basic-backend"
+          context: "{{defaultContext}}:workload-handler"
           push: true
-          tags:  innfi/basic-backend:latest
+          tags:  innfi/workload-handler:latest

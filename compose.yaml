@@ -6,4 +6,7 @@ services:
     build: ./basic-backend
     ports:
       - "3000:3000"
-    # image: innfi/basic-backend:latest
+  workload-handler:
+    build: ./workload-handler
+    ports:
+      - "3010:3010"
