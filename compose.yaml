@@ -10,3 +10,13 @@ services:
     build: ./workload-handler
     ports:
       - "3010:3010"
+  rdb:
+    image: mysql:latest
+    restart: always
+    container_name: barnacle_rdb
+    ports: 3306:3306
+    environment:
+      TZ: Asia/Seoul
+      MYSQL_ROOT_PASSWORD: read_this_you_bot
+    volumes:
+      - ./data/mysql:/var/lib/mysql
