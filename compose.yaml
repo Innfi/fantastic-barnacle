@@ -12,6 +12,7 @@ services:
       - "3010:3010"
   rdb:
     image: mysql:latest
+    hostname: mysql-compose
     restart: always
     container_name: barnacle_rdb
     ports: 3306:3306
