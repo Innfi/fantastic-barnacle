@@ -3,7 +3,7 @@
 
 ## fantastic-barnacle
 
-simple services for deployment exercises: implementing a service manage coupons
+simple services for deployment exercises: implementing a coupon managing service
  (generate, issue, expire, etc)
 
 # TODO
