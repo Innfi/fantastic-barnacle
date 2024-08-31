@@ -1,0 +1,14 @@
+config:
+  target: http://localhost:3000
+  phases:
+    - duration: 10
+      arraivalRate: 3
+  defaults:
+    headers:
+      Content-Type: application/json
+      User-Agent: Artilliery
+scenarios:
+  - name: healthcheck
+    flow:
+      - get:
+        url: /
