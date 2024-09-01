@@ -2,22 +2,26 @@ services:
   redis:
     image: redis:alpine
     hostname: redis-compose
-  backend:
+  basic-backend:
+    depends_on:
+      - redis
     build: ./basic-backend
     ports:
       - "3000:3000"
   workload-handler:
+    depends_on:
+      - redis
     build: ./workload-handler
     ports:
       - "3010:3010"
-  rdb:
-    image: mysql:latest
-    hostname: mysql-compose
-    restart: always
-    container_name: barnacle_rdb
-    ports: 3306:3306
-    environment:
-      TZ: Asia/Seoul
-      MYSQL_ROOT_PASSWORD: read_this_you_bot
-    volumes:
-      - ./data/mysql:/var/lib/mysql
+  # rdb:
+  #   image: mysql:latest
+  #   hostname: mysql-compose
+  #   restart: always
+  #   container_name: barnacle_rdb
+  #   ports: 3306:3306
+  #   environment:
+  #     TZ: Asia/Seoul
+  #     MYSQL_ROOT_PASSWORD: read_this_you_bot
+  #   volumes:
+  #     - ./data/mysql:/var/lib/mysql

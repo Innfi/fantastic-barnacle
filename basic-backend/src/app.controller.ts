@@ -1,6 +1,7 @@
-import { Controller, Get, Logger, Post } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Post } from '@nestjs/common';
+
 import { AppService } from './app.service';
-import { Coupon } from './entity';
+import { Coupon, EnqueMessagePayload, EnqueMessageResponse } from './entity';
 
 export class PostGenerateCouponsPayload {
   targetProductId: number;
@@ -22,7 +23,12 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @Post()
+  @Post('enque')
+  async enqueMessage(@Body() payload: EnqueMessagePayload): Promise<EnqueMessageResponse> {
+    return await this.appService.enqueData(payload);
+  }
+
+  @Post('/coupon/generate')
   postGenerateCoupons(payload: PostGenerateCouponsPayload): PostGenerateCouponsResponse {
     // TODO: implement
     Logger.log(`postGenerateCoupons] ${payload.targetProductId}`);
@@ -33,7 +39,7 @@ export class AppController {
     };
   }
 
-  @Post()
+  @Post('/coupon/issue')
   postIssueCoupon(): Coupon {
     //TODO: implement coupon issuing / user entity
 
@@ -46,6 +52,4 @@ export class AppController {
       validUntil: new Date(),
     };
   }
-
-  // TODO: minimal apis for requirements
 }

@@ -3,7 +3,6 @@ import { BullModule } from '@nestjs/bullmq';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
@@ -16,14 +15,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     }),
     BullModule.registerQueue({
       name: 'queue'
-    }),
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'mysql-compose',
-      port: 3306,
-      username: 'innfi',
-      password: 'test',
-      database: 'test'
     }),
   ],
   controllers: [AppController],

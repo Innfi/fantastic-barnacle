@@ -6,7 +6,7 @@ import { Job } from "bullmq";
 export class QueueReceiver extends WorkerHost {
   async process(job: Job<any, any, string>): Promise<any> {
     switch (job.name) {
-      case 'enque':
+      case 'message':
         Logger.log(`process] enque: ${JSON.stringify(job.data)}`);
         break;
       default:

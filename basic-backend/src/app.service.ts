@@ -2,6 +2,8 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { Injectable } from '@nestjs/common';
 import { Queue } from 'bullmq';
 
+import { EnqueMessagePayload, EnqueMessageResponse } from './entity';
+
 @Injectable()
 export class AppService {
   constructor(@InjectQueue('queue') private queue: Queue) {}
@@ -10,11 +12,16 @@ export class AppService {
     return 'Hello World!';
   }
 
-  async enqueData(id: number): Promise<number> {
-    await this.queue.add('enque', {
-      messageId: id,
+  async enqueData(payload: EnqueMessagePayload): Promise<EnqueMessageResponse> {
+    const { messageId } = payload;
+
+    await this.queue.add('message', {
+      messageId,
     });
 
-    return id;
+    return {
+      result: 'success',
+      receivedMessageId: messageId,
+    };
   }
 }
