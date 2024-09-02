@@ -12,3 +12,7 @@ scenarios:
     flow:
       - get:
           url: /
+      - post:
+          url: /enque
+          json:
+            messageId: {{$randomNumber(1, 100)}}
