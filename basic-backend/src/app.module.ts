@@ -8,9 +8,8 @@ import { AppService } from './app.service';
   imports: [
     BullModule.forRoot({
       connection: {
-        // FIXME: read connection data from env
-        host: 'redis-compose',
-        port: 6379
+        host: process.env.REDIS_HOST || 'localhost',
+        port: process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT) : 6379,
       },
     }),
     BullModule.registerQueue({
