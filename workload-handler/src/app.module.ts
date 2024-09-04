@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bullmq';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -15,6 +16,14 @@ import { QueueReceiver } from './receiver';
     }),
     BullModule.registerQueue({
       name: 'queue'
+    }),
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: process.env.RDB_HOST || 'localhost',
+      port: process.env.RDB_PORT ? parseInt(process.env.RDB_PORT) : 3306,
+      username: 'root',
+      password: 'read_this_you_bot',
+      database: 'test',
     }),
   ],
   controllers: [AppController],
