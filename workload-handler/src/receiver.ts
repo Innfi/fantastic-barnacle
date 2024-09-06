@@ -3,6 +3,8 @@ import { Injectable, Logger } from "@nestjs/common";
 import { Job } from "bullmq";
 import { DataSource } from "typeorm";
 
+import { MessageHistory } from "./entity";
+
 interface MessagePayload {
   messageId: number;
 }
@@ -15,7 +17,7 @@ export class QueueReceiver extends WorkerHost {
   async process(job: Job<any, any, string>): Promise<any> {
     switch (job.name) {
       case 'message':
-        Logger.log(`process] enque: ${JSON.stringify(job.data)}`);
+        await this.saveMessage(job.data);
         break;
       default:
         Logger.error(`process] invalid name: ${job.name}`);
@@ -23,9 +25,15 @@ export class QueueReceiver extends WorkerHost {
     }
   }
 
-  private async testDataSource(data: unknown): Promise<void> {
+  private async saveMessage(data: unknown): Promise<void> {
     const payload = data as MessagePayload;
 
     Logger.log(`messageId: ${payload.messageId}`);
+
+    const saveResult = await this.dataSource.manager.save(MessageHistory, {
+      messageId: payload.messageId,
+    });
+
+    Logger.log(`new entity id: ${saveResult.id}`);
   }
 }

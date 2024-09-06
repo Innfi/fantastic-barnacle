@@ -10,9 +10,10 @@ services:
       - "3306:3306"
     environment:
       TZ: Asia/Seoul
-      MYSQL_ROOT_PASSWORD: read_this_you_bot
+      MYSQL_ROOT_PASSWORD: "read_this_you_bot"
     volumes:
-      - ./data/mysql:/var/lib/mysql
+      - ./data/mysql/data:/var/lib/mysql
+      - ./data/mysql/init:/docker-entrypoint-initdb.d
   basic-backend:
     depends_on:
       - redis
@@ -25,6 +26,7 @@ services:
       - PORT=3001
   workload-handler:
     depends_on:
+      - rdb
       - redis
     build: ./workload-handler
     ports:
@@ -35,3 +37,4 @@ services:
       - PORT=3011
       - RDB_HOST=mysql-compose
       - RDB_PORT=3306
+ 

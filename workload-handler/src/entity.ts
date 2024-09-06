@@ -1,6 +1,6 @@
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
-@Entity()
+@Entity('messageHistories')
 export class MessageHistory {
   @PrimaryGeneratedColumn()
   id: number;
