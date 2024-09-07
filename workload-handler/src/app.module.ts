@@ -4,8 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { QueueReceiver } from './receiver';
-import { MessageHistory } from './entity';
+import { ReceiverModule } from './receiver/module';
 
 @Module({
   imports: [
@@ -25,10 +24,11 @@ import { MessageHistory } from './entity';
       username: 'root',
       password: 'read_this_you_bot',
       database: 'test',
+      entities: [__dirname + '/../**/*.entity.{js,ts}'],
     }),
-    TypeOrmModule.forFeature([MessageHistory]),
+    ReceiverModule,
   ],
   controllers: [AppController],
-  providers: [AppService, QueueReceiver],
+  providers: [AppService],
 })
 export class AppModule {}

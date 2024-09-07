@@ -3,7 +3,7 @@ import { Injectable, Logger } from "@nestjs/common";
 import { Job } from "bullmq";
 import { DataSource } from "typeorm";
 
-import { MessageHistory } from "./entity";
+import { MessageHistory } from "./messge.entity";
 
 interface MessagePayload {
   messageId: number;
@@ -26,14 +26,21 @@ export class QueueReceiver extends WorkerHost {
   }
 
   private async saveMessage(data: unknown): Promise<void> {
-    const payload = data as MessagePayload;
+    Logger.log(`saveMesasge] payload: ${JSON.stringify(data)}`);
+    try {
+      const payload = data as MessagePayload;
+      if (!payload) {
+        Logger.log(`saveMessage] invalid payload`);
+        return;
+      }
 
-    Logger.log(`messageId: ${payload.messageId}`);
+      const saveResult = await this.dataSource.manager.save(MessageHistory, {
+        messageId: payload.messageId,
+      });
 
-    const saveResult = await this.dataSource.manager.save(MessageHistory, {
-      messageId: payload.messageId,
-    });
-
-    Logger.log(`new entity id: ${saveResult.id}`);
+      Logger.log(`new entity id: ${saveResult.id}`);
+    } catch (err: unknown) {
+      Logger.error((err as Error).stack);
+    }
   }
 }

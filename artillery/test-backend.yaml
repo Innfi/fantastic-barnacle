@@ -1,8 +1,8 @@
 config:
-  target: http://localhost:3000
+  target: http://localhost:3001
   phases:
-    - duration: 10
-      arrivalRate: 10
+    - duration: 60
+      arrivalRate: 20
   defaults:
     headers:
       Content-Type: application/json
@@ -15,4 +15,4 @@ scenarios:
       - post:
           url: /enque
           json:
-            messageId: {{$randomNumber(1, 100)}}
+            messageId: "{{$randomNumber(1, 100)}}"
