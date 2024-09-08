@@ -6,7 +6,7 @@ import { EnqueMessagePayload, EnqueMessageResponse } from './entity';
 
 @Injectable()
 export class AppService {
-  constructor(@InjectQueue('queue') private queue: Queue) {}
+  constructor(@InjectQueue('request_queue') private queue: Queue) {}
 
   getHello(): string {
     return 'Hello World!';

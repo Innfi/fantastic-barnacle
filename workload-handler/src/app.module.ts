@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ReceiverModule } from './receiver/module';
+import { WorkloadReceiverModule } from './workload-receiver/module';
 
 @Module({
   imports: [
@@ -14,9 +14,8 @@ import { ReceiverModule } from './receiver/module';
         port: process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT) : 6379,
       },
     }),
-    BullModule.registerQueue({
-      name: 'queue'
-    }),
+    BullModule.registerQueue({ name: 'request_queue' }),
+    BullModule.registerQueue({ name: 'response_queue' }),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: process.env.RDB_HOST || 'localhost',
@@ -26,7 +25,7 @@ import { ReceiverModule } from './receiver/module';
       database: 'test',
       entities: [__dirname + '/../**/*.entity.{js,ts}'],
     }),
-    ReceiverModule,
+    WorkloadReceiverModule,
   ],
   controllers: [AppController],
   providers: [AppService],

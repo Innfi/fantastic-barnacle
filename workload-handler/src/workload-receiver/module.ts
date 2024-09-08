@@ -10,5 +10,5 @@ import { QueueReceiver } from './receiver';
   ],
   providers: [QueueReceiver],
 })
-export class ReceiverModule{}
+export class WorkloadReceiverModule{}
 

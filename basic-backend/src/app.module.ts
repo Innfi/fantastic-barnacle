@@ -3,6 +3,7 @@ import { BullModule } from '@nestjs/bullmq';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { ResponseReceiverModule } from './response-receiver/module';
 
 @Module({
   imports: [
@@ -12,9 +13,9 @@ import { AppService } from './app.service';
         port: process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT) : 6379,
       },
     }),
-    BullModule.registerQueue({
-      name: 'queue'
-    }),
+    BullModule.registerQueue({ name: 'request_queue' }),
+    BullModule.registerQueue({ name: 'response_queue' }),
+    ResponseReceiverModule,
   ],
   controllers: [AppController],
   providers: [AppService],
