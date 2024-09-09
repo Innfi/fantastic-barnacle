@@ -14,9 +14,19 @@ services:
     volumes:
       - ./data/mysql/data:/var/lib/mysql
       - ./data/mysql/init:/docker-entrypoint-initdb.d
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data/mongodb:/data
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=test
   basic-backend:
     depends_on:
       - redis
+      - mongo
     build: ./basic-backend
     ports:
       - "3001:3001"
@@ -28,6 +38,7 @@ services:
     depends_on:
       - rdb
       - redis
+      - mongo
     build: ./workload-handler
     ports:
       - "3011:3011"
