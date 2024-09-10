@@ -1,9 +1,11 @@
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bullmq';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ResponseReceiverModule } from './response-receiver/module';
+import { LoggingInterceptor } from './common/logger';
 
 @Module({
   imports: [
@@ -18,6 +20,12 @@ import { ResponseReceiverModule } from './response-receiver/module';
     ResponseReceiverModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
+    }
+  ],
 })
 export class AppModule {}
