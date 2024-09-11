@@ -34,6 +34,7 @@ services:
       - REDIS_HOST=redis-compose
       - REDIS_PORT=6379
       - PORT=3001
+      - MONGODB_URL=mongodb://mongo/log
   workload-handler:
     depends_on:
       - rdb
@@ -48,4 +49,5 @@ services:
       - PORT=3011
       - RDB_HOST=mysql-compose
       - RDB_PORT=3306
+      - MONGODB_URL=mongodb://mongo/log
  

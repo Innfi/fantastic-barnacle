@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bullmq';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { MongooseModule } from '@nestjs/mongoose';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -10,7 +11,7 @@ import { WorkloadReceiverModule } from './workload-receiver/module';
   imports: [
     BullModule.forRoot({
       connection: {
-        host: process.env.REDIS_HOST || 'localhost',
+        host: process.env.REDIS_HOST ?? 'localhost',
         port: process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT) : 6379,
       },
     }),
@@ -25,6 +26,7 @@ import { WorkloadReceiverModule } from './workload-receiver/module';
       database: 'test',
       entities: [__dirname + '/../**/*.entity.{js,ts}'],
     }),
+    MongooseModule.forRoot(process.env.MONGODB_URL ?? 'mongodb://localhost/log'),
     WorkloadReceiverModule,
   ],
   controllers: [AppController],
