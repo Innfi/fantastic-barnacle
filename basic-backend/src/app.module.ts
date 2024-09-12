@@ -3,10 +3,10 @@ import { Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bullmq';
 import { MongooseModule } from '@nestjs/mongoose';
 
+import { LoggingInterceptor } from './common/logger';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ResponseReceiverModule } from './response-receiver/module';
-import { LoggingInterceptor } from './common/logger';
 
 @Module({
   imports: [

@@ -1,8 +1,10 @@
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bullmq';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MongooseModule } from '@nestjs/mongoose';
 
+import { LoggingInterceptor } from './common/logger';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { WorkloadReceiverModule } from './workload-receiver/module';
@@ -30,6 +32,12 @@ import { WorkloadReceiverModule } from './workload-receiver/module';
     WorkloadReceiverModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
+    }
+  ],
 })
 export class AppModule {}
