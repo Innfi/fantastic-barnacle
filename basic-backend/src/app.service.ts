@@ -12,11 +12,12 @@ export class AppService {
     return 'Hello World!';
   }
 
-  async enqueData(payload: EnqueMessagePayload): Promise<EnqueMessageResponse> {
+  async enqueData(payload: EnqueMessagePayload, transactionId: string): Promise<EnqueMessageResponse> {
     const { messageId } = payload;
 
     await this.queue.add('message', {
       messageId,
+      transactionId,
     });
 
     return {

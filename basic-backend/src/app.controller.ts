@@ -1,4 +1,5 @@
-import { Body, Controller, Get, Logger, Post } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Post, Req } from '@nestjs/common';
+import { Request } from 'express';
 
 import { AppService } from './app.service';
 import { Coupon, EnqueMessagePayload, EnqueMessageResponse } from './entity';
@@ -24,8 +25,12 @@ export class AppController {
   }
 
   @Post('enque')
-  async enqueMessage(@Body() payload: EnqueMessagePayload): Promise<EnqueMessageResponse> {
-    return await this.appService.enqueData(payload);
+  async enqueMessage(
+    @Req() request: Request,
+    @Body() payload: EnqueMessagePayload
+  ): Promise<EnqueMessageResponse> {
+    const transactionId = request.header['transactionId'] as string;
+    return await this.appService.enqueData(payload, transactionId);
   }
 
   @Post('/coupon/generate')

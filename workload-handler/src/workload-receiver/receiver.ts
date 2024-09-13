@@ -7,6 +7,7 @@ import { MessageHistory } from "./messge.entity";
 
 interface MessagePayload {
   messageId: number;
+  transactionId: string;
 }
 
 @Injectable()
