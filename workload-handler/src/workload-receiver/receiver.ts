@@ -4,16 +4,24 @@ import { Job, Queue } from "bullmq";
 import { DataSource } from "typeorm";
 
 import { MessageHistory } from "./messge.entity";
+import { EventEmitter2, OnEvent } from "@nestjs/event-emitter";
 
 interface MessagePayload {
   messageId: number;
   transactionId: string;
 }
 
+interface TransactionLoggingEventPayload {
+  messageId: number;
+  transactionId: string;
+  createdAt: Date;
+}
+
 @Injectable()
 @Processor('request_queue')
 export class QueueReceiver extends WorkerHost {
   constructor(
+    private eventEmitter: EventEmitter2,
     @InjectQueue('response_queue') private queue: Queue,
     private readonly dataSource: DataSource
   ) { super(); }
@@ -37,9 +45,10 @@ export class QueueReceiver extends WorkerHost {
         Logger.log(`saveMessage] invalid payload`);
         return;
       }
+      const { messageId, transactionId } = payload;
 
       const saveResult = await this.dataSource.manager.save(MessageHistory, {
-        messageId: payload.messageId,
+        messageId,
       });
 
       Logger.log(`new entity id: ${saveResult.id}`);
@@ -50,8 +59,22 @@ export class QueueReceiver extends WorkerHost {
         createdAt: saveResult.createdAt,
       });
 
+      this.eventEmitter.emit('transaction', {
+        transactionId,
+        messageId,
+        createdAt: saveResult.createdAt,
+      });
+
     } catch (err: unknown) {
       Logger.error((err as Error).stack);
     }
+  }
+
+  @OnEvent('transaction')
+  eventHandlerTransaction(payload: TransactionLoggingEventPayload): void {
+    const { messageId, transactionId, createdAt } = payload;
+    Logger.log(`eventHandlerTransaction] transactionId: ${transactionId}`);
+
+    // todo: internal event handler?
   }
 }
