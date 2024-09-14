@@ -30,6 +30,8 @@ export class AppController {
     @Body() payload: EnqueMessagePayload
   ): Promise<EnqueMessageResponse> {
     const transactionId = request.header['transactionId'] as string;
+    Logger.log(`transactionId: ${transactionId}`);
+
     return await this.appService.enqueData(payload, transactionId);
   }
 

@@ -1,13 +1,11 @@
-import { Injectable, NestMiddleware } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { v4 } from 'uuid';
 
+export function transactionIdMiddleware(req: Request, res: Response, next: NextFunction) {
+  Logger.log('transactionMiddleware.use] ');
 
-@Injectable()
-export class TransactionIdMiddleware implements NestMiddleware {
-  use(req: Request, res: Response, next: NextFunction) {
-    req.header['transactionId'] = v4();
+  req.header['transactionId'] = v4();
 
-    next();
-  }
+  next();
 }
