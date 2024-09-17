@@ -6,6 +6,5 @@ export function transactionIdMiddleware(req: Request, res: Response, next: NextF
   Logger.log('transactionMiddleware.use] ');
 
   req.header['transactionId'] = v4();
-
   next();
 }

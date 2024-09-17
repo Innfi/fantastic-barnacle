@@ -1,20 +1,15 @@
 import { InjectQueue, Processor, WorkerHost } from "@nestjs/bullmq";
 import { Injectable, Logger } from "@nestjs/common";
+import { EventEmitter2 } from "@nestjs/event-emitter";
 import { Job, Queue } from "bullmq";
 import { DataSource } from "typeorm";
 
-import { MessageHistory } from "./messge.entity";
-import { EventEmitter2, OnEvent } from "@nestjs/event-emitter";
+import { MessageHistory } from "./message.entity";
+import { EVENT_NAME_LOGGING } from "./event.logger";
 
 interface MessagePayload {
   messageId: number;
   transactionId: string;
-}
-
-interface TransactionLoggingEventPayload {
-  messageId: number;
-  transactionId: string;
-  createdAt: Date;
 }
 
 @Injectable()
@@ -59,7 +54,7 @@ export class QueueReceiver extends WorkerHost {
         createdAt: saveResult.createdAt,
       });
 
-      this.eventEmitter.emit('transaction', {
+      this.eventEmitter.emit(EVENT_NAME_LOGGING, {
         transactionId,
         messageId,
         createdAt: saveResult.createdAt,
@@ -68,13 +63,5 @@ export class QueueReceiver extends WorkerHost {
     } catch (err: unknown) {
       Logger.error((err as Error).stack);
     }
-  }
-
-  @OnEvent('transaction')
-  eventHandlerTransaction(payload: TransactionLoggingEventPayload): void {
-    const { messageId, transactionId, createdAt } = payload;
-    Logger.log(`eventHandlerTransaction] transactionId: ${transactionId}`);
-
-    // todo: internal event handler?
   }
 }

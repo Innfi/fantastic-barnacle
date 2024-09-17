@@ -1,4 +1,3 @@
-import { APP_INTERCEPTOR } from '@nestjs/core';
 import { Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bullmq';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -29,7 +28,11 @@ import { WorkloadReceiverModule } from './workload-receiver/module';
       database: 'test',
       entities: [__dirname + '/../**/*.entity.{js,ts}'],
     }),
-    MongooseModule.forRoot(process.env.MONGODB_URL ?? 'mongodb://localhost/log'),
+    MongooseModule.forRoot(process.env.MONGODB_URL ?? 'mongodb://localhost:27017', {
+      user: 'root',
+      pass: 'test',
+      dbName: 'log',
+    }),
     WorkloadReceiverModule,
   ],
   controllers: [AppController],
