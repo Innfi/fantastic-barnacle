@@ -18,11 +18,7 @@ import { ResponseReceiverModule } from './response-receiver/module';
     }),
     BullModule.registerQueue({ name: 'request_queue' }),
     BullModule.registerQueue({ name: 'response_queue' }),
-    MongooseModule.forRoot(process.env.MONGODB_URL ?? 'mongodb://localhost:27017', {
-      user: 'root',
-      pass: 'test',
-      dbName: 'log',
-    }),
+    MongooseModule.forRoot(process.env.MONGODB_URL ?? 'mongodb://root:test@localhost:27017/log'),
     ResponseReceiverModule,
   ],
   controllers: [AppController],

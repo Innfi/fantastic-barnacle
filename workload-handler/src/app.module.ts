@@ -28,11 +28,7 @@ import { WorkloadReceiverModule } from './workload-receiver/module';
       database: 'test',
       entities: [__dirname + '/../**/*.entity.{js,ts}'],
     }),
-    MongooseModule.forRoot(process.env.MONGODB_URL ?? 'mongodb://localhost:27017', {
-      user: 'root',
-      pass: 'test',
-      dbName: 'log',
-    }),
+    MongooseModule.forRoot(process.env.MONGODB_URL ?? 'mongodb://root:test@localhost:27017/log'),
     WorkloadReceiverModule,
   ],
   controllers: [AppController],
