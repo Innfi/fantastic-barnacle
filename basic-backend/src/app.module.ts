@@ -2,8 +2,10 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bullmq';
 import { MongooseModule } from '@nestjs/mongoose';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 import { LoggingInterceptor } from './common/logger';
+import { BarnacleLog, BarnacleLogSchema } from './common/schema';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ResponseReceiverModule } from './response-receiver/module';
@@ -18,7 +20,11 @@ import { ResponseReceiverModule } from './response-receiver/module';
     }),
     BullModule.registerQueue({ name: 'request_queue' }),
     BullModule.registerQueue({ name: 'response_queue' }),
+    EventEmitterModule.forRoot(),
     MongooseModule.forRoot(process.env.MONGODB_URL ?? 'mongodb://root:test@localhost:27017/log'),
+    MongooseModule.forFeature([
+      { name: BarnacleLog.name, schema: BarnacleLogSchema },
+    ]),
     ResponseReceiverModule,
   ],
   controllers: [AppController],
