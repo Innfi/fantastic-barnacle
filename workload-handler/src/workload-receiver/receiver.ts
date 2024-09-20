@@ -33,11 +33,10 @@ export class QueueReceiver extends WorkerHost {
   }
 
   private async saveMessage(data: unknown): Promise<void> {
-    Logger.log(`saveMesasge] payload: ${JSON.stringify(data)}`);
     try {
       const payload = data as MessagePayload;
       if (!payload) {
-        Logger.log(`saveMessage] invalid payload`);
+        Logger.error(`saveMessage] invalid payload`);
         return;
       }
       const { messageId, transactionId } = payload;
@@ -52,6 +51,7 @@ export class QueueReceiver extends WorkerHost {
         id: saveResult.id,
         messageId: saveResult.messageId,
         createdAt: saveResult.createdAt,
+        transactionId,
       });
 
       this.eventEmitter.emit(EVENT_NAME_LOGGING, {
