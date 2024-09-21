@@ -9,8 +9,14 @@ import { BarnacleLog } from './schema';
 import { EVENT_LOG_HTTP, EVENT_WORKLOAD_HANDLER_RESP } from './event.key';
 
 interface HttpLogPayload {
-  request: Request;
-  response: object & { transactionId: string };
+  request: {
+    transactionId: string;
+    path: string;
+    query: object;
+    params: object;
+    body: object;
+  };
+  response: object;
 }
 
 @Injectable()
@@ -23,12 +29,11 @@ export class LogEventHandler {
 
   @OnEvent(EVENT_LOG_HTTP)
   async handleLoggingEventHttp(payload: Readonly<HttpLogPayload>): Promise<void> {
-    Logger.log(`handleLoggingEventHttp] ${payload.response.transactionId}`);
-
+    Logger.log(`handleLogginEventHttp] ${payload.request.transactionId}`);
     const { request, response } = payload;
 
     const updateResult = await this.logModel.updateOne(
-      { transactionId: { $eq: response.transactionId } },
+      { transactionId: { $eq: request.transactionId } },
       {
         $set: {
           'http.request': {

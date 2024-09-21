@@ -23,7 +23,16 @@ export class LoggingInterceptor implements NestInterceptor {
       .handle()
       .pipe(
         tap((response: object) => {
-          this.eventEmitter.emit(EVENT_LOG_HTTP, { request, response });
+          this.eventEmitter.emit(EVENT_LOG_HTTP, { 
+            request: {
+              transactionId: request.header['transactionId'],
+              path: request.path,
+              query: request.query,
+              params: request.params,
+              body: request.body,
+            }, 
+            response 
+          });
         }),
       );
   }
