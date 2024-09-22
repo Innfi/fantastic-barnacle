@@ -11,6 +11,17 @@ export class BarnacleLog {
 
   @Prop()
   createdAt: Date;
+
+  @Prop({ type: Object })
+  request: {
+    path: string;
+    query: object;
+    params: object;
+    body: object;
+  };
+
+  @Prop({ type: Object })
+  response: object;
 }
 
 export type BarnacleLogDocument = HydratedDocument<BarnacleLog>;

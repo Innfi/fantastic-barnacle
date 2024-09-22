@@ -36,13 +36,13 @@ export class LogEventHandler {
       { transactionId: { $eq: request.transactionId } },
       {
         $set: {
-          'http.request': {
+          'request': {
             'path': request.path,
             'query': request.query,
             'params': request.params,
             'body': request.body,
           },
-          'http.response': response,
+          'response': response,
         },
       },
       {
