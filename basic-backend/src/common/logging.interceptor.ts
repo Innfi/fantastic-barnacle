@@ -5,7 +5,7 @@ import { Request  } from 'express';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
-import { EVENT_LOG_HTTP } from './event.key';
+import { EVENT_LOG_HTTP, HttpLogPayload } from './log.payload';
 
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor { 
@@ -32,7 +32,7 @@ export class LoggingInterceptor implements NestInterceptor {
               body: request.body,
             }, 
             response 
-          });
+          } as HttpLogPayload);
         }),
       );
   }

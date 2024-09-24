@@ -3,7 +3,7 @@ import { Processor, WorkerHost } from "@nestjs/bullmq";
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Job } from "bullmq";
 
-import { EVENT_WORKLOAD_HANDLER_RESP } from "../common/event.key";
+import { EVENT_WORKLOAD_HANDLER_RESP } from "../common/log.payload";
 
 type WorkloadHandlerResponse = object & { transactionId: string };
 

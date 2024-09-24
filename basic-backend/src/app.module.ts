@@ -4,9 +4,9 @@ import { BullModule } from '@nestjs/bullmq';
 import { MongooseModule } from '@nestjs/mongoose';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 
-import { BarnacleLog, BarnacleLogSchema } from './common/schema';
+import { BarnacleLog, BarnacleLogSchema } from './common/log.schema';
 import { LoggingInterceptor } from './common/logging.interceptor';
-import { LogEventHandler } from './common/event.handler';
+import { LogWriterMongo } from './common/log.writer.mongo';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ResponseReceiverModule } from './response-receiver/module';
@@ -30,7 +30,7 @@ import { ResponseReceiverModule } from './response-receiver/module';
   ],
   controllers: [AppController],
   providers: [
-    LogEventHandler,
+    LogWriterMongo,
     AppService,
     {
       provide: APP_INTERCEPTOR,
