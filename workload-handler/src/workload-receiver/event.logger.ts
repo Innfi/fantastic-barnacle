@@ -26,11 +26,17 @@ export class EventLogger {
 
   private async saveLogToMongoDB(payload: TransactionLoggingEventPayload): Promise<void> {
     try {
-      const newDocument = new this.logModel(payload);
-
-      const saveResult = await newDocument.save();
-
-      Logger.log(`saveLogToMongoDB] new document id: ${saveResult.id}`);
+      const updateResult = await this.logModel.updateOne(
+        { transactionId: { $eq: payload.transactionId } },
+        { $set: { 
+            'transactionId': payload.transactionId,
+            'messageId': payload.messageId,
+            'createdAt': payload.createdAt,
+          } 
+        },
+        { upsert: true },
+      );
+      Logger.log(`saveLogToMongoDB] updateResult: ${JSON.stringify(updateResult)}`);
     } catch (err: unknown) {
       Logger.error(`saveLogToMongoDB] ${(err as Error).message}`);
     }
