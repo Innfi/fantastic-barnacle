@@ -26,10 +26,6 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=test
-  fluent-bit:
-    image: fluent/fluent-bit
-    volumes:
-      - ./data/fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf
   basic-backend:
     depends_on:
       - redis

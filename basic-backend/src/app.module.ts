@@ -10,6 +10,7 @@ import { LogWriterMongo } from './common/log.writer.mongo';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ResponseReceiverModule } from './response-receiver/module';
+import { CouponModule } from './coupon/module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { ResponseReceiverModule } from './response-receiver/module';
       { name: BarnacleLog.name, schema: BarnacleLogSchema },
     ]),
     ResponseReceiverModule,
+    CouponModule,
   ],
   controllers: [AppController],
   providers: [
