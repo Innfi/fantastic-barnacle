@@ -6,3 +6,14 @@ export interface Coupon {
 	createdAt: Date;
 	validUntil: Date;
 }
+
+export class PostGenerateCouponsPayload {
+  targetProductId: number;
+  discountRate: number;
+  validUntil: Date;
+}
+
+export interface PostGenerateCouponsResponse {
+  targetProductId: number;
+  couponsCount: number;
+}

@@ -1,27 +1,20 @@
-import { Controller, Injectable, Logger, Post } from "@nestjs/common";
+import { Body, Controller, Logger, Post, Req } from "@nestjs/common";
+import { Request } from 'express';
 
-import { Coupon } from "./entity";
+import { Coupon, PostGenerateCouponsPayload, PostGenerateCouponsResponse } from "./entity";
 import { CounponService } from "./service";
-
-export class PostGenerateCouponsPayload {
-  targetProductId: number;
-  discountRate: number;
-  validUntil: Date;
-}
-
-export interface PostGenerateCouponsResponse {
-  targetProductId: number;
-  couponsCount: number;
-}
 
 @Controller('/coupon')
 export class CouponController {
   constructor(private readonly service: CounponService) {}
 
   @Post('generate')
-  postGenerateCoupons(payload: PostGenerateCouponsPayload): PostGenerateCouponsResponse {
-    // TODO: implement
-    Logger.log(`postGenerateCoupons] ${payload.targetProductId}`);
+  postGenerateCoupons(
+    @Req() request: Request,
+    @Body() payload: PostGenerateCouponsPayload
+  ): PostGenerateCouponsResponse {
+    const transactionId = request.header['transactionId'] as string;
+    Logger.log(`postGenerateCoupons] ${transactionId}, ${payload.targetProductId}`);
 
     return {
       targetProductId: payload.targetProductId,
