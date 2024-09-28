@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bullmq';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 
 import { AppController } from './app.controller';
@@ -29,6 +30,9 @@ import { WorkloadReceiverModule } from './workload-receiver/module';
       entities: [__dirname + '/../**/*.entity.{js,ts}'],
     }),
     MongooseModule.forRoot(process.env.MONGODB_URL ?? 'mongodb://root:test@localhost:27017/log'),
+    ElasticsearchModule.register({
+      node: process.env.ES_URL ?? 'http://localhost:9200',
+    }),
     WorkloadReceiverModule,
   ],
   controllers: [AppController],

@@ -2,6 +2,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bullmq';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 
 import { BarnacleLog, BarnacleLogSchema } from './common/log.schema';
@@ -27,6 +28,9 @@ import { CouponModule } from './coupon/module';
     MongooseModule.forFeature([
       { name: BarnacleLog.name, schema: BarnacleLogSchema },
     ]),
+    ElasticsearchModule.register({
+      node: process.env.ES_URL ?? 'http://localhost:9200',
+    }),
     ResponseReceiverModule,
     CouponModule,
   ],
