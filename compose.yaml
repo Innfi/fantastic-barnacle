@@ -1,35 +1,35 @@
 services:
-  redis:
-    image: redis:alpine
-    hostname: redis-compose
-    ports:
-      - "6379:6379"
-  rdb:
-    image: mysql:latest
-    hostname: mysql-compose
-    restart: always
-    ports: 
-      - "3306:3306"
-    environment:
-      TZ: Asia/Seoul
-      MYSQL_ROOT_PASSWORD: "read_this_you_bot"
-    volumes:
-      - ./data/mysql/data:/var/lib/mysql
-      - ./data/mysql/init:/docker-entrypoint-initdb.d
-  mongo:
-    image: mongo
-    hostname: mongo-compose
-    ports:
-      - "27017:27017"
-    volumes:
-      - ./data/mongodb:/data
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=test
+#   redis:
+#     image: redis:alpine
+#     hostname: redis-compose
+#     ports:
+#       - "6379:6379"
+#   rdb:
+#     image: mysql:latest
+#     hostname: mysql-compose
+#     restart: always
+#     ports: 
+#       - "3306:3306"
+#     environment:
+#       TZ: Asia/Seoul
+#       MYSQL_ROOT_PASSWORD: "read_this_you_bot"
+#     volumes:
+#       - ./data/mysql/data:/var/lib/mysql
+#       - ./data/mysql/init:/docker-entrypoint-initdb.d
+#   mongo:
+#     image: mongo
+#     hostname: mongo-compose
+#     ports:
+#       - "27017:27017"
+#     volumes:
+#       - ./data/mongodb:/data
+#     environment:
+#       - MONGO_INITDB_ROOT_USERNAME=root
+#       - MONGO_INITDB_ROOT_PASSWORD=test
   setup:
-   image: elastic
+   image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
    volumes:
-     - certs:/usr/share/elasticsearch/config/certs
+     - ./data/certs:/usr/share/elasticsearch/config/certs
    user: "0"
    command: >
      bash -c '
@@ -84,12 +84,12 @@ services:
    depends_on:
      setup:
        condition: service_healthy
-   image: elastic
+   image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
    labels:
      co.elastic.logs/module: elasticsearch
    volumes:
-     - certs:/usr/share/elasticsearch/config/certs
-     - esdata01:/usr/share/elasticsearch/data
+     - ./data/certs:/usr/share/elasticsearch/config/certs
+     - ./data/esdata01:/usr/share/elasticsearch/data
    ports:
      - ${ES_PORT}:9200
    environment:
@@ -127,12 +127,12 @@ services:
    depends_on:
      es01:
        condition: service_healthy
-   image: docker.elastic.co/kibana/kibana:${STACK_VERSION}
+   image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
    labels:
      co.elastic.logs/module: kibana
    volumes:
-     - certs:/usr/share/kibana/config/certs
-     - kibanadata:/usr/share/kibana/data
+     - ./data/certs:/usr/share/kibana/config/certs
+     - ./data/kibana:/usr/share/kibana/data
    ports:
      - ${KIBANA_PORT}:5601
    environment:
@@ -154,33 +154,33 @@ services:
      interval: 10s
      timeout: 10s
      retries: 120
-  basic-backend:
-    depends_on:
-      - redis
-      - es01
-      - mongo
-    build: ./basic-backend
-    ports:
-      - "3001:3001"
-    environment:
-      - REDIS_HOST=redis-compose
-      - REDIS_PORT=6379
-      - PORT=3001
-      - MONGODB_URL=mongodb://root:test@mongo-compose:27017/log
-  workload-handler:
-    depends_on:
-      - rdb
-      - redis
-      - es01
-      - mongo
-    build: ./workload-handler
-    ports:
-      - "3011:3011"
-    environment:
-      - REDIS_HOST=redis-compose
-      - REDIS_PORT=6379
-      - PORT=3011
-      - RDB_HOST=mysql-compose
-      - RDB_PORT=3306
-      - MONGODB_URL=mongodb://root:test@mongo-compose:27017/log
- 
+#  basic-backend:
+#    depends_on:
+#      - redis
+#      - es01
+#      - mongo
+#    build: ./basic-backend
+#    ports:
+#      - "3001:3001"
+#    environment:
+#      - REDIS_HOST=redis-compose
+#      - REDIS_PORT=6379
+#      - PORT=3001
+#      - MONGODB_URL=mongodb://root:test@mongo-compose:27017/log
+#  workload-handler:
+#    depends_on:
+#      - rdb
+#      - redis
+#      - es01
+#      - mongo
+#    build: ./workload-handler
+#    ports:
+#      - "3011:3011"
+#    environment:
+#      - REDIS_HOST=redis-compose
+#      - REDIS_PORT=6379
+#      - PORT=3011
+#      - RDB_HOST=mysql-compose
+#      - RDB_PORT=3306
+#      - MONGODB_URL=mongodb://root:test@mongo-compose:27017/log
+# 
