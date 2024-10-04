@@ -155,35 +155,33 @@ services:
       interval: 10s
       timeout: 10s
       retries: 120
-basic-backend:
-  depends_on:
-    - redis
-    - es01
-    - mongo
-  build: ./basic-backend
-  ports:
-    - "3001:3001"
-  environment:
-    - REDIS_HOST=redis-compose
-    - REDIS_PORT=6379
-    - PORT=3001
-    - MONGODB_URL=mongodb://root:test@mongo-compose:27017/log
-workload-handler:
-  depends_on:
-    - rdb
-    - redis
-    - es01
-    - mongo
-  build: ./workload-handler
-  ports:
-    - "3011:3011"
-  environment:
-    - REDIS_HOST=redis-compose
-    - REDIS_PORT=6379
-    - PORT=3011
-    - RDB_HOST=mysql-compose
-    - RDB_PORT=3306
-    - MONGODB_URL=mongodb://root:test@mongo-compose:27017/log
+  basic-backend:
+    depends_on:
+      - redis
+      - mongo
+    build: ./basic-backend
+    ports:
+      - "3001:3001"
+    environment:
+      - REDIS_HOST=redis-compose
+      - REDIS_PORT=6379
+      - PORT=3001
+      - MONGODB_URL=mongodb://root:test@mongo-compose:27017/log
+  workload-handler:
+    depends_on:
+      - rdb
+      - redis
+      - mongo
+    build: ./workload-handler
+    ports:
+      - "3011:3011"
+    environment:
+      - REDIS_HOST=redis-compose
+      - REDIS_PORT=6379
+      - PORT=3011
+      - RDB_HOST=mysql-compose
+      - RDB_PORT=3306
+      - MONGODB_URL=mongodb://root:test@mongo-compose:27017/log
 
 volumes:
  certs:
