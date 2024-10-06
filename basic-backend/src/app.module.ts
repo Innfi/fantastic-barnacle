@@ -5,9 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 
-import { BarnacleLog, BarnacleLogSchema } from './common/log.schema';
 import { LoggingInterceptor } from './common/logging.interceptor';
-import { LogWriterMongo } from './common/log.writer.mongo';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ResponseReceiverModule } from './response-receiver/module';
@@ -24,10 +22,6 @@ import { CouponModule } from './coupon/module';
     BullModule.registerQueue({ name: 'request_queue' }),
     BullModule.registerQueue({ name: 'response_queue' }),
     EventEmitterModule.forRoot(),
-    MongooseModule.forRoot(process.env.MONGODB_URL ?? 'mongodb://root:test@localhost:27017/log'),
-    MongooseModule.forFeature([
-      { name: BarnacleLog.name, schema: BarnacleLogSchema },
-    ]),
     ElasticsearchModule.register({
       node: process.env.ES_URL ?? 'http://localhost:9200',
     }),
@@ -36,7 +30,6 @@ import { CouponModule } from './coupon/module';
   ],
   controllers: [AppController],
   providers: [
-    LogWriterMongo,
     AppService,
     {
       provide: APP_INTERCEPTOR,

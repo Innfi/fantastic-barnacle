@@ -17,16 +17,6 @@ services:
     volumes:
       - ./data/mysql/data:/var/lib/mysql
       - ./data/mysql/init:/docker-entrypoint-initdb.d
-  mongo:
-    image: mongo
-    hostname: mongo-compose
-    ports:
-      - "27017:27017"
-    volumes:
-      - ./data/mongodb:/data
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=test
   setup:
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
     volumes:
@@ -158,7 +148,7 @@ services:
   basic-backend:
     depends_on:
       - redis
-      - mongo
+      - es01
     build: ./basic-backend
     ports:
       - "3001:3001"
@@ -167,11 +157,12 @@ services:
       - REDIS_PORT=6379
       - PORT=3001
       - MONGODB_URL=mongodb://root:test@mongo-compose:27017/log
+      - ES_URL=http://es01:9200
   workload-handler:
     depends_on:
       - rdb
       - redis
-      - mongo
+      - es01
     build: ./workload-handler
     ports:
       - "3011:3011"
@@ -181,7 +172,7 @@ services:
       - PORT=3011
       - RDB_HOST=mysql-compose
       - RDB_PORT=3306
-      - MONGODB_URL=mongodb://root:test@mongo-compose:27017/log
+      - ES_URL=http://es01:9200
 
 volumes:
  certs:

@@ -4,8 +4,8 @@ import { OnEvent } from '@nestjs/event-emitter';
 
 import { Model } from 'mongoose';
 
-import { BarnacleLog } from './log.schema';
-import { EVENT_LOG_HTTP, EVENT_WORKLOAD_HANDLER_RESP, HttpLogPayload } from './log.payload';
+import { BarnacleLog } from './schema';
+import { EVENT_LOG_HTTP, EVENT_WORKLOAD_HANDLER_RESP, HttpLogPayload } from '../log.payload';
 
 @Injectable()
 export class LogWriterMongo {
@@ -17,7 +17,7 @@ export class LogWriterMongo {
 
   @OnEvent(EVENT_LOG_HTTP)
   async handleLoggingEventHttp(payload: Readonly<HttpLogPayload>): Promise<void> {
-    Logger.log(`handleLogginEventHttp] ${payload.request.transactionId}`);
+    Logger.log(`LogWriterMongo.handleLogginEventHttp] ${payload.request.transactionId}`);
     const { request, response } = payload;
 
     const updateResult = await this.logModel.updateOne(
@@ -43,7 +43,7 @@ export class LogWriterMongo {
 
   @OnEvent(EVENT_WORKLOAD_HANDLER_RESP)
   async handleLoggingEventWorkload(payload: Readonly<object & { transactionId: string }>): Promise<void> {
-    Logger.log(`handleLoggingEventWorkload] ${payload.transactionId}`);
+    Logger.log(`LogWriterMongo.handleLoggingEventWorkload] ${payload.transactionId}`);
 
     const updateResult = await this.logModel.updateOne(
       { transactionId: { $eq: payload.transactionId } },
