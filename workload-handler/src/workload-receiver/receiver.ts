@@ -4,8 +4,8 @@ import { EventEmitter2 } from "@nestjs/event-emitter";
 import { Job, Queue } from "bullmq";
 import { DataSource } from "typeorm";
 
+import { EVENT_NAME_LOGGING } from "../common/log.writer.mongo/writer.mongo";
 import { MessageHistory } from "./message.entity";
-import { EVENT_NAME_LOGGING } from "./event.logger";
 
 interface MessagePayload {
   messageId: number;
