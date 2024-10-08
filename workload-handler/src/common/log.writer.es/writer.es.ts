@@ -19,5 +19,16 @@ export class EventLogWriterES {
   @OnEvent(EVENT_NAME_LOGGING)
   async transactionEventHandler(payload: TransactionLoggingEventPayload): Promise<void> {
     Logger.log(`EventWriteMongo.transactionEventHandler] ${JSON.stringify(payload)}`);
+
+    const result = await this.esService.index({
+      index: INDEX_NAME,
+      document: {
+        'transactionId': payload.transactionId,
+        'messageId': payload.messageId,
+        'createdAt': payload.createdAt,
+      },
+    });
+
+    Logger.log(`EventLogWriterES.transactionEventHandler] document created: ${result._id}`);
   }
 }
