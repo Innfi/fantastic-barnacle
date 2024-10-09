@@ -152,12 +152,15 @@ services:
     build: ./basic-backend
     ports:
       - "3001:3001"
+    volumes:
+      - certs:/certs
     environment:
       - REDIS_HOST=redis-compose
       - REDIS_PORT=6379
       - PORT=3001
-      - MONGODB_URL=mongodb://root:test@mongo-compose:27017/log
       - ES_URL=http://es01:9200
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - CA_PATH=/certs/ca/ca.crt
   workload-handler:
     depends_on:
       - rdb
@@ -166,6 +169,8 @@ services:
     build: ./workload-handler
     ports:
       - "3011:3011"
+    volumes:
+      - certs:/certs
     environment:
       - REDIS_HOST=redis-compose
       - REDIS_PORT=6379
@@ -173,6 +178,8 @@ services:
       - RDB_HOST=mysql-compose
       - RDB_PORT=3306
       - ES_URL=http://es01:9200
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - CA_PATH=/certs/ca/ca.crt
 
 volumes:
  certs:

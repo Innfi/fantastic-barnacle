@@ -3,6 +3,7 @@ import { BullModule } from '@nestjs/bullmq';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import * as fs from 'fs';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -27,9 +28,6 @@ import { WorkloadReceiverModule } from './workload-receiver/module';
       password: 'read_this_you_bot',
       database: 'test',
       entities: [__dirname + '/../**/*.entity.{js,ts}'],
-    }),
-    ElasticsearchModule.register({
-      node: process.env.ES_URL ?? 'http://localhost:9200',
     }),
     WorkloadReceiverModule,
   ],

@@ -1,10 +1,11 @@
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bullmq';
-import { MongooseModule } from '@nestjs/mongoose';
 import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import * as fs from 'fs';
 
+import { LogWriterES } from './common/log.writer.es/writer.es';
 import { LoggingInterceptor } from './common/logging.interceptor';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -24,6 +25,14 @@ import { CouponModule } from './coupon/module';
     EventEmitterModule.forRoot(),
     ElasticsearchModule.register({
       node: process.env.ES_URL ?? 'http://localhost:9200',
+      auth: {
+        username: 'elastic',
+        password: process.env.ELASTIC_PASSWORD ?? 'test'
+      },
+      tls: {
+        ca: fs.readFileSync(process.env.CA_PATH),
+        rejectUnauthorized: false,
+      },
     }),
     ResponseReceiverModule,
     CouponModule,
@@ -31,6 +40,7 @@ import { CouponModule } from './coupon/module';
   controllers: [AppController],
   providers: [
     AppService,
+    LogWriterES,
     {
       provide: APP_INTERCEPTOR,
       useClass: LoggingInterceptor,
