@@ -4,7 +4,7 @@ import { ElasticsearchService } from "@nestjs/elasticsearch";
 
 import { EVENT_LOG_HTTP, EVENT_WORKLOAD_HANDLER_RESP, HttpLogPayload } from "../log.payload";
 
-const INDEX_NAME = 'log';
+const INDEX_NAME = 'barnacle-log';
 
 @Injectable()
 export class LogWriterES {

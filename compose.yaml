@@ -158,7 +158,7 @@ services:
       - REDIS_HOST=redis-compose
       - REDIS_PORT=6379
       - PORT=3001
-      - ES_URL=http://es01:9200
+      - ES_URL=https://es01:9200
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
       - CA_PATH=/certs/ca/ca.crt
   workload-handler:
@@ -177,7 +177,7 @@ services:
       - PORT=3011
       - RDB_HOST=mysql-compose
       - RDB_PORT=3306
-      - ES_URL=http://es01:9200
+      - ES_URL=https://es01:9200
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
       - CA_PATH=/certs/ca/ca.crt
 
