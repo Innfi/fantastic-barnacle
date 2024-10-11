@@ -18,6 +18,7 @@ export class LogWriterES {
     const result = await this.esService.index({
       index: INDEX_NAME,
       document: {
+        'esCreatedAt': new Date(),
         'request': {
           'path': request.path,
           'query': request.query,
@@ -39,6 +40,7 @@ export class LogWriterES {
     const result = await this.esService.index({
       index: INDEX_NAME,
       document: {
+        'esCreatedAt': new Date(),
         'query.resp': payload,
         'transactionId': payload.transactionId,
       },

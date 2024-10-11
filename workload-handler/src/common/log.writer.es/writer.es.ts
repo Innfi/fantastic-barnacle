@@ -23,6 +23,7 @@ export class EventLogWriterES {
     const result = await this.esService.index({
       index: INDEX_NAME,
       document: {
+        'esCreatedAt': new Date(),
         'transactionId': payload.transactionId,
         'messageId': payload.messageId,
         'createdAt': payload.createdAt,
