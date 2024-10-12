@@ -1,0 +1,18 @@
+services:
+  redis:
+    image: redis:alpine
+    hostname: redis-compose
+    ports:
+      - "6379:6379"
+  rdb:
+    image: mysql:latest
+    hostname: mysql-compose
+    restart: always
+    ports: 
+      - "3306:3306"
+    environment:
+      TZ: Asia/Seoul
+      MYSQL_ROOT_PASSWORD: "read_this_you_bot"
+    volumes:
+      - ./data/mysql/data:/var/lib/mysql
+      - ./data/mysql/init:/docker-entrypoint-initdb.d

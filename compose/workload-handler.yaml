@@ -1,0 +1,25 @@
+include:
+  - elastic.yaml
+  - persistence.yaml
+
+services:
+  workload-handler:
+    depends_on:
+      - rdb
+      - redis
+      - es01
+    build: ./workload-handler
+    ports:
+      - "3011:3011"
+    volumes:
+      - certs:/certs
+    environment:
+      - REDIS_HOST=redis-compose
+      - REDIS_PORT=6379
+      - PORT=3011
+      - RDB_HOST=mysql-compose
+      - RDB_PORT=3306
+      - ES_URL=https://es01:9200
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - CA_PATH=/certs/ca/ca.crt
+
