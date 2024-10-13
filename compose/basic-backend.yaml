@@ -1,6 +1,7 @@
 include:
-  - elastic.yaml
-  - persistence.yaml
+  - path:
+    - ./elastic.yaml
+    - ./persistence.yaml
 
 services:
   basic-backend:

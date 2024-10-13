@@ -1,6 +1,7 @@
 include:
-  - elastic.yaml
-  - persistence.yaml
+  - path:
+    - compose/elastic.yaml
+    - compose/persistence.yaml
 
 services:
   workload-handler:
