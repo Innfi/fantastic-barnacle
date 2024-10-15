@@ -11,6 +11,15 @@ export class CounponService {
   async generateCoupon(transactionId: string, payload: PostGenerateCouponsPayload): Promise<PostGenerateCouponsResponse> {
     Logger.log(`CouponService.generateCoupon] ${JSON.stringify(payload)}`);
 
-    throw new NotImplementedException();
+    await this.queue.add('generateCoupon', {
+      transactionId,
+      payload,
+    });
+
+    return {
+      status: 'pending',
+      targetProductId: payload.targetProductId,
+      couponsCount: payload.couponsCount,
+    };
   }
 }

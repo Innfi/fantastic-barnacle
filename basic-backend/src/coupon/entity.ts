@@ -1,6 +1,5 @@
 export interface Coupon {
-	uid: number;
-	name: string;
+	uuid: string;
 	targetProductId: number;
 	discountRate: number;
 	createdAt: Date;
@@ -11,9 +10,11 @@ export class PostGenerateCouponsPayload {
   targetProductId: number;
   discountRate: number;
   validUntil: Date;
+	couponsCount: number;
 }
 
 export interface PostGenerateCouponsResponse {
   targetProductId: number;
   couponsCount: number;
+	status: string;
 }

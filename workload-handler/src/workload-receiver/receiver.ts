@@ -4,12 +4,22 @@ import { EventEmitter2 } from "@nestjs/event-emitter";
 import { Job, Queue } from "bullmq";
 import { DataSource } from "typeorm";
 
-import { EVENT_NAME_LOGGING } from "../common/log.writer.mongo/writer.mongo";
+import { EVENT_NAME_LOGGING } from "../common/log.writer.es/writer.es";
 import { MessageHistory } from "./message.entity";
 
 interface MessagePayload {
   messageId: number;
   transactionId: string;
+}
+
+interface GenerateCouponsPayload {
+  transactionId: string;
+  payload: {
+    targetProductId: number;
+    discountRate: number;
+    validUntil: Date;
+	  couponsCount: number;
+  };
 }
 
 @Injectable()
@@ -26,6 +36,8 @@ export class QueueReceiver extends WorkerHost {
       case 'message':
         await this.saveMessage(job.data);
         break;
+      case 'generateCoupon':
+        await this.generateCoupons(job.data);
       default:
         Logger.error(`process] invalid name: ${job.name}`);
         break;
@@ -59,6 +71,30 @@ export class QueueReceiver extends WorkerHost {
         messageId,
         createdAt: saveResult.createdAt,
       });
+
+    } catch (err: unknown) {
+      Logger.error((err as Error).stack);
+    }
+  }
+
+  private async generateCoupons(data: unknown): Promise<void> {
+    try {
+      const couponsePayload = data as GenerateCouponsPayload;
+      if (!couponsePayload) {
+        Logger.error(`generateCoupons] invalid payload`);
+        return;
+      }
+      const { transactionId, payload } = couponsePayload;
+      const { targetProductId, discountRate, validUntil, couponsCount } = payload;
+
+      if (!couponsCount || couponsCount <= 0) {
+        Logger.error(`generateCouponse] invalid count`);
+        return;
+      }
+      // TODO: predefine products for discountRate?
+      for(let i=0;i<couponsCount;i++) {
+        
+      }
 
     } catch (err: unknown) {
       Logger.error((err as Error).stack);
