@@ -3,9 +3,11 @@ import { Injectable, Logger } from "@nestjs/common";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { Job, Queue } from "bullmq";
 import { DataSource } from "typeorm";
+import { v4 } from 'uuid';
 
 import { EVENT_NAME_LOGGING } from "../common/log.writer.es/writer.es";
 import { MessageHistory } from "./message.entity";
+import { Coupon } from "./coupon.entity";
 
 interface MessagePayload {
   messageId: number;
@@ -93,7 +95,14 @@ export class QueueReceiver extends WorkerHost {
       }
       // TODO: predefine products for discountRate?
       for(let i=0;i<couponsCount;i++) {
-        
+        const newCoupon: Partial<Coupon>= {
+          uuid: v4(),
+          targetProductId,
+          discountRate,
+          validUntil,
+        };
+
+        await this.dataSource.manager.save(Coupon, newCoupon);
       }
 
     } catch (err: unknown) {
