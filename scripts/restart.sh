@@ -1,2 +1,2 @@
 #!/bin/sh
-docker compose up --no-deps build $1
+docker compose up --no-deps --build $1

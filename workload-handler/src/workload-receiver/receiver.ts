@@ -40,6 +40,7 @@ export class QueueReceiver extends WorkerHost {
         break;
       case 'generateCoupon':
         await this.generateCoupons(job.data);
+        break;
       default:
         Logger.error(`process] invalid name: ${job.name}`);
         break;
