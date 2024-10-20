@@ -13,7 +13,7 @@ services:
       - "3306:3306"
     environment:
       TZ: Asia/Seoul
-      MYSQL_ROOT_PASSWORD: "read_this_you_bot"
+      MYSQL_ROOT_PASSWORD: ${RDB_PASSWORD}
     volumes:
       - ./data/mysql/data:/var/lib/mysql
       - ./data/mysql/init:/docker-entrypoint-initdb.d
