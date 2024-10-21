@@ -18,3 +18,7 @@ export interface PostGenerateCouponsResponse {
   couponsCount: number;
 	status: string;
 }
+
+export interface PostIssueCouponPayload {
+	targetProductId: number;
+}

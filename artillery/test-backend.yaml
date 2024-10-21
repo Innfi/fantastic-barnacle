@@ -8,7 +8,7 @@ config:
       Content-Type: application/json
       User-Agent: Artilliery
 scenarios:
-  - name: healthcheck
+  - name: enque
     flow:
       - get:
           url: /
@@ -16,3 +16,14 @@ scenarios:
           url: /enque
           json:
             messageId: "{{$randomNumber(1, 100)}}"
+  - name: generate coupon
+    flow:
+      - get:
+          url: /
+      - post:
+          url: /coupon/generate
+          json:
+            targetProductId: 1234
+            discountRate: 20
+            validUntil: "2024-12-31T00:00:00Z"
+            couponseCount: 10

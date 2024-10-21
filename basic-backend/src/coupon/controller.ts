@@ -1,7 +1,7 @@
 import { Body, Controller, Logger, Post, Req } from "@nestjs/common";
 import { Request } from 'express';
 
-import { Coupon, PostGenerateCouponsPayload, PostGenerateCouponsResponse } from "./entity";
+import { Coupon, PostGenerateCouponsPayload, PostGenerateCouponsResponse, PostIssueCouponPayload } from "./entity";
 import { CounponService } from "./service";
 
 @Controller('/coupon')
@@ -20,7 +20,11 @@ export class CouponController {
   }
 
   @Post('issue')
-  postIssueCoupon(): Coupon {
+  async postIssueCoupon(
+    @Req() request: Request,
+    @Body() payload: PostIssueCouponPayload
+  ): Promise<Coupon> {
+    const transactionId = request.header['transactionId'] as string;
     //TODO: implement coupon issuing / user entity
 
     return {
