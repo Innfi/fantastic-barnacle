@@ -4,6 +4,7 @@ import { BullModule } from '@nestjs/bullmq';
 import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import * as fs from 'fs';
+import { RedisModule } from '@liaoliaots/nestjs-redis';
 
 import { LogWriterES } from './common/log.writer.es/writer.es';
 import { LoggingInterceptor } from './common/logging.interceptor';
@@ -22,6 +23,13 @@ import { CouponModule } from './coupon/module';
     }),
     BullModule.registerQueue({ name: 'request_queue' }),
     BullModule.registerQueue({ name: 'response_queue' }),
+    RedisModule.forRoot({
+      config: {
+        host: process.env.REDIS_HOST ?? 'localhost',
+        port: process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT) : 6379,
+      },
+      readyLog: true,
+    }),
     EventEmitterModule.forRoot(),
     ElasticsearchModule.register({
       node: process.env.ES_URL ?? 'http://localhost:9200',

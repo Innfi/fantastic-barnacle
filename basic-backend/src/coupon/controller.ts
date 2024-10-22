@@ -25,14 +25,7 @@ export class CouponController {
     @Body() payload: PostIssueCouponPayload
   ): Promise<Coupon> {
     const transactionId = request.header['transactionId'] as string;
-    //TODO: implement coupon issuing / user entity
-
-    return {
-      uuid: 'test',
-      targetProductId: 2,
-      discountRate: 10,
-      createdAt: new Date(),
-      validUntil: new Date(),
-    };
+    
+    return await this.service.issueCoupon(transactionId, payload);
   }
 }
