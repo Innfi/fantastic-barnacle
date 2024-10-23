@@ -1,10 +1,10 @@
 import { InjectQueue } from "@nestjs/bullmq";
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
 import { Queue } from "bullmq";
+import Redis from "ioredis";
 import { RedisService } from "@liaoliaots/nestjs-redis";
 
 import { Coupon, PostGenerateCouponsPayload, PostGenerateCouponsResponse, PostIssueCouponPayload } from "./entity";
-import Redis from "ioredis";
 
 @Injectable()
 export class CounponService {
@@ -35,14 +35,20 @@ export class CounponService {
   async issueCoupon(transactionId: string, payload: PostIssueCouponPayload): Promise<Coupon> {
     Logger.log(`CouponService.issueCoupon] ${transactionId}`);
 
-    const expectedCouponValue = await this.redisClient.get('dummykey_userid');
+    await this.queue.add('issueCoupon', { transactionId, payload });
 
-    return {
-      uuid: 'test',
-      targetProductId: 2,
-      discountRate: 10,
-      createdAt: new Date(),
-      validUntil: new Date(),
-    };
+    // possible approaches: exponential backoff or retry by fixed interval
+    const expectedCouponValue = await this.redisClient.get(`issueresult${payload.userId}`);
+    if (!expectedCouponValue) {
+      Logger.error('issueCoupon] redisClient.get() failed');
+      throw new InternalServerErrorException();
+    }
+    const newCoupon = JSON.parse(expectedCouponValue) as Coupon;
+    if (!newCoupon) {
+      Logger.error('issueCoupon] parse failed');
+      throw new InternalServerErrorException();
+    }
+
+    return newCoupon;
   }
 }

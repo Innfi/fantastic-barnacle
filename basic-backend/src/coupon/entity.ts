@@ -21,4 +21,5 @@ export interface PostGenerateCouponsResponse {
 
 export interface PostIssueCouponPayload {
 	targetProductId: number;
+	userId: number; //FIXME: implement authentication?
 }
