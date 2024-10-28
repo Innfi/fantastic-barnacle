@@ -38,7 +38,7 @@ export class CounponService {
     await this.queue.add('issueCoupon', { transactionId, payload });
 
     // possible approaches: exponential backoff or retry by fixed interval
-    const expectedCouponValue = await this.redisClient.get(`issueresult${payload.userId}`);
+    const expectedCouponValue = await this.redisClient.get(`issueresult-${payload.userId}`);
     if (!expectedCouponValue) {
       Logger.error('issueCoupon] redisClient.get() failed');
       throw new InternalServerErrorException();

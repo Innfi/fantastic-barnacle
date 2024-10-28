@@ -7,9 +7,8 @@ export const EVENT_NAME_LOGGING = 'transaction';
 const INDEX_NAME = 'barnacle-log';
 
 export interface TransactionLoggingEventPayload {
-  messageId: number;
   transactionId: string;
-  createdAt: Date;
+  data: object;
 }
 
 @Injectable()
@@ -25,8 +24,7 @@ export class EventLogWriterES {
       document: {
         'esCreatedAt': new Date(),
         'transactionId': payload.transactionId,
-        'messageId': payload.messageId,
-        'createdAt': payload.createdAt,
+        'data': payload.data,
       },
     });
 

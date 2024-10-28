@@ -19,14 +19,17 @@ export class LogWriterES {
       index: INDEX_NAME,
       document: {
         'esCreatedAt': new Date(),
-        'request': {
-          'path': request.path,
-          'query': request.query,
-          'params': request.params,
-          'body': request.body,
-          'transactionId': request.transactionId,
+        'transactionId': request.transactionId,
+        'data': {
+          'request': {
+            'path': request.path,
+            'query': request.query,
+            'params': request.params,
+            'body': request.body,
+            'transactionId': request.transactionId, // redundant?
+          },
+          'response': response,
         },
-        'response': response,
       },
     });
 
@@ -41,8 +44,10 @@ export class LogWriterES {
       index: INDEX_NAME,
       document: {
         'esCreatedAt': new Date(),
-        'query.resp': payload,
         'transactionId': payload.transactionId,
+        'data': {
+          'query.resp': payload,
+        },
       },
     });
 

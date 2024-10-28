@@ -33,7 +33,6 @@
     "bullmq": "^5.8.3",
     "dotenv": "^16.4.5",
     "ioredis": "^5.4.1",
-    "mongoose": "^8.6.1",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
     "uuid": "^10.0.0"
