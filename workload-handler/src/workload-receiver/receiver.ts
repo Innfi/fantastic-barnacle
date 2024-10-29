@@ -148,6 +148,26 @@ export class QueueReceiver extends WorkerHost {
 
       const { transactionId, payload } = couponsPayload;
       const { targetProductId, userId } = payload;
+      Logger.log(`targetProductId: ${targetProductId}`);
+      Logger.log(`userId: ${userId}`);
+
+      const dummyCoupon = {
+        uuid: v4(),
+        targetProductId,
+        discountRate: 10,
+        validUntil: new Date(),
+      };
+
+      await this.redisClient.set(`issueresult-${userId}`, JSON.stringify(dummyCoupon));
+
+      this.eventEmitter.emit(EVENT_NAME_LOGGING, {
+        transactionId,
+        data: {
+          userId,
+          uuid: dummyCoupon.uuid,
+          issuedAt: new Date(),
+        }
+      });
 
     } catch (err: unknown) {
       Logger.error((err as Error).stack);

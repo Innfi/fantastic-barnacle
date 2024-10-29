@@ -6,6 +6,10 @@ import { RedisService } from "@liaoliaots/nestjs-redis";
 
 import { Coupon, PostGenerateCouponsPayload, PostGenerateCouponsResponse, PostIssueCouponPayload } from "./entity";
 
+function sleep(ms: number) {
+  return new Promise((r) => setTimeout(r, ms));
+}
+
 @Injectable()
 export class CounponService {
   private readonly redisClient: Redis | null;
@@ -38,7 +42,7 @@ export class CounponService {
     await this.queue.add('issueCoupon', { transactionId, payload });
 
     // possible approaches: exponential backoff or retry by fixed interval
-    const expectedCouponValue = await this.redisClient.get(`issueresult-${payload.userId}`);
+    const expectedCouponValue = await this.tryGetCoupon(payload.userId);
     if (!expectedCouponValue) {
       Logger.error('issueCoupon] redisClient.get() failed');
       throw new InternalServerErrorException();
@@ -50,5 +54,15 @@ export class CounponService {
     }
 
     return newCoupon;
+  }
+
+  private async tryGetCoupon(userId: number): Promise<string> {
+    // FIXME: ugly and barely working
+    for (let i=0;i<10;i++) {
+      const couponValue = await this.redisClient.get(`issueresult-${userId}`);
+      if (couponValue && couponValue.length > 0) return couponValue;
+
+      sleep(200);
+    }
   }
 }

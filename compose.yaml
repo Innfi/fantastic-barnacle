@@ -199,6 +199,8 @@ services:
       - PORT=3011
       - RDB_HOST=mysql-compose
       - RDB_PORT=3306
+      - RDB_USERNAME=${RDB_USERNAME}
+      - RDB_PASSWORD=${RDB_PASSWORD}
       - ES_URL=https://es01:9200
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
       - CA_PATH=/certs/ca/ca.crt
