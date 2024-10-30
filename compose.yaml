@@ -5,6 +5,11 @@ services:
     hostname: redis-compose
     ports:
       - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 2s
+      retries: 10
   rdb:
     image: mysql:latest
     hostname: mysql-compose
@@ -17,6 +22,11 @@ services:
     volumes:
       - ./data/mysql/data:/var/lib/mysql
       - ./data/mysql/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ['CMD-SHELL', 'mysqladmin ping -h 127.0.0.1 -u root --password=$$MYSQL_ROOT_PASSWORD']
+      interval: 3s
+      timeout: 2s
+      retries: 10
   setup:
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
     volumes:
@@ -169,8 +179,10 @@ services:
 
   basic-backend:
     depends_on:
-      - redis
-      - es01
+      es01:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     build: ./basic-backend
     ports:
       - "3001:3001"
@@ -185,9 +197,12 @@ services:
       - CA_PATH=/certs/ca/ca.crt
   workload-handler:
     depends_on:
-      - rdb
-      - redis
-      - es01
+      rdb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      es01:
+        condition: service_healthy
     build: ./workload-handler
     ports:
       - "3011:3011"
