@@ -34,6 +34,8 @@ interface IssueCouponsPayload {
   };
 }
 
+const COUPON_QUEUE = 'coupon_queue';
+
 @Injectable()
 @Processor('request_queue')
 export class QueueReceiver extends WorkerHost {
@@ -125,6 +127,7 @@ export class QueueReceiver extends WorkerHost {
         };
 
         await this.dataSource.manager.save(Coupon, newCoupon);
+        await this.redisClient.rpush(COUPON_QUEUE, newCoupon.uuid);
 
         // FIXME: batch write for logs?
         this.eventEmitter.emit(EVENT_NAME_LOGGING, {
@@ -151,20 +154,25 @@ export class QueueReceiver extends WorkerHost {
       Logger.log(`targetProductId: ${targetProductId}`);
       Logger.log(`userId: ${userId}`);
 
-      const dummyCoupon = {
-        uuid: v4(),
-        targetProductId,
-        discountRate: 10,
-        validUntil: new Date(),
-      };
 
-      await this.redisClient.set(`issueresult-${userId}`, JSON.stringify(dummyCoupon));
+      const uuid = await this.redisClient.rpop(COUPON_QUEUE);
+      if (!uuid || uuid.length <= 0) {
+        // TODO: send errorResponse
+        return;
+      }
+      const coupon = await this.dataSource.manager.findOne(Coupon, { where: { uuid }});
+      if (!coupon) {
+        // TODO: send errorResponse
+        return;
+      }
+
+      await this.redisClient.set(`issueresult-${userId}`, JSON.stringify(coupon));
 
       this.eventEmitter.emit(EVENT_NAME_LOGGING, {
         transactionId,
         data: {
           userId,
-          uuid: dummyCoupon.uuid,
+          uuid,
           issuedAt: new Date(),
         }
       });
