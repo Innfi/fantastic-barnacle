@@ -157,24 +157,40 @@ export class QueueReceiver extends WorkerHost {
 
       const uuid = await this.redisClient.rpop(COUPON_QUEUE);
       if (!uuid || uuid.length <= 0) {
-        // TODO: send errorResponse
+        await this.redisClient.set(`issueresult-${userId}`, JSON.stringify({
+          result: 'err',
+          coupon: null,
+        }));
+
+        this.eventEmitter.emit(EVENT_NAME_LOGGING, {
+          transactionId,
+          data: { userId, err: 'invalid uuid' }
+        });
+
         return;
       }
       const coupon = await this.dataSource.manager.findOne(Coupon, { where: { uuid }});
       if (!coupon) {
-        // TODO: send errorResponse
+        await this.redisClient.set(`issueresult-${userId}`, JSON.stringify({
+          result: 'err',
+          coupon: null,
+        }));
+
+        this.eventEmitter.emit(EVENT_NAME_LOGGING, {
+          transactionId,
+          data: { userId, uuid, err: 'invalid coupon' }
+        });
         return;
       }
 
-      await this.redisClient.set(`issueresult-${userId}`, JSON.stringify(coupon));
+      await this.redisClient.set(`issueresult-${userId}`, JSON.stringify({
+        result: 'ok',
+        coupon,
+      }));
 
       this.eventEmitter.emit(EVENT_NAME_LOGGING, {
         transactionId,
-        data: {
-          userId,
-          uuid,
-          issuedAt: new Date(),
-        }
+        data: { userId, uuid, issuedAt: new Date(), }
       });
 
     } catch (err: unknown) {

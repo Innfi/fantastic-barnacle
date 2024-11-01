@@ -6,6 +6,11 @@ import { RedisService } from "@liaoliaots/nestjs-redis";
 
 import { Coupon, PostGenerateCouponsPayload, PostGenerateCouponsResponse, PostIssueCouponPayload } from "./entity";
 
+interface IssueResult {
+  result: 'ok' | 'error';
+  coupon: Coupon | null;
+}
+
 function sleep(ms: number) {
   return new Promise((r) => setTimeout(r, ms));
 }
@@ -47,22 +52,24 @@ export class CounponService {
       Logger.error('issueCoupon] redisClient.get() failed');
       throw new InternalServerErrorException();
     }
-    const newCoupon = JSON.parse(expectedCouponValue) as Coupon;
-    if (!newCoupon) {
+    const issueResult = JSON.parse(expectedCouponValue) as IssueResult;
+    if (!issueResult || issueResult.result !== 'ok') {
       Logger.error('issueCoupon] parse failed');
       throw new InternalServerErrorException();
     }
 
-    return newCoupon;
+    return issueResult.coupon;
   }
 
   private async tryGetCoupon(userId: number): Promise<string> {
     // FIXME: ugly and barely working
     for (let i=0;i<10;i++) {
-      const couponValue = await this.redisClient.get(`issueresult-${userId}`);
-      if (couponValue && couponValue.length > 0) return couponValue;
+      const resultValue = await this.redisClient.get(`issueresult-${userId}`);
+      if (resultValue && resultValue.length > 0) return resultValue;
 
       sleep(200);
     }
+
+    return undefined;
   }
 }
