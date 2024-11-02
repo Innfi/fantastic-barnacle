@@ -3,6 +3,7 @@ import { Injectable, InternalServerErrorException, Logger } from "@nestjs/common
 import { Queue } from "bullmq";
 import Redis from "ioredis";
 import { RedisService } from "@liaoliaots/nestjs-redis";
+import { backOff } from "exponential-backoff";
 
 import { Coupon, PostGenerateCouponsPayload, PostGenerateCouponsResponse, PostIssueCouponPayload } from "./entity";
 
@@ -46,7 +47,6 @@ export class CounponService {
 
     await this.queue.add('issueCoupon', { transactionId, payload });
 
-    // possible approaches: exponential backoff or retry by fixed interval
     const expectedCouponValue = await this.tryGetCoupon(payload.userId);
     if (!expectedCouponValue) {
       Logger.error('issueCoupon] redisClient.get() failed');
@@ -62,14 +62,19 @@ export class CounponService {
   }
 
   private async tryGetCoupon(userId: number): Promise<string> {
-    // FIXME: ugly and barely working
-    for (let i=0;i<10;i++) {
-      const resultValue = await this.redisClient.get(`issueresult-${userId}`);
-      if (resultValue && resultValue.length > 0) return resultValue;
-
-      sleep(200);
+    try {
+      return await backOff(async () => {
+        const stringFromRedis = await this.redisClient.get(`issueresult-${userId}`);
+        if (!stringFromRedis || stringFromRedis.length <= 0) {
+          return Promise.reject();
+        }
+        return stringFromRedis;
+      }, {
+        jitter: 'full',
+        maxDelay: 5000
+      });
+    } catch (err: unknown) {
+      return undefined;
     }
-
-    return undefined;
   }
 }
