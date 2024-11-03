@@ -16,17 +16,19 @@ interface MessagePayload {
   messageId: number;
 }
 
-interface GenerateCouponsPayload {
-  transactionId: string;
-  payload: {
-    targetProductId: number;
-    discountRate: number;
-    validUntil: Date;
-	  couponsCount: number;
-  };
+interface CouponPayload {
+  targetProductId: number;
+  discountRate: number;
+  validUntil: Date;
+	couponsCount: number;
 }
 
-interface IssueCouponsPayload {
+interface GenerateCouponsRequest {
+  transactionId: string;
+  payload: CouponPayload;
+}
+
+interface IssueCouponsRequest {
   transactionId: string;
   payload: {
     targetProductId: number;
@@ -105,34 +107,27 @@ export class QueueReceiver extends WorkerHost {
 
   private async generateCoupons(data: unknown): Promise<void> {
     try {
-      const couponsPayload = data as GenerateCouponsPayload;
+      const couponsPayload = data as GenerateCouponsRequest;
       if (!couponsPayload) {
         Logger.error(`generateCoupons] invalid payload`);
         return;
       }
       const { transactionId, payload } = couponsPayload;
-      const { targetProductId, discountRate, validUntil, couponsCount } = payload;
 
-      if (!couponsCount || couponsCount <= 0) {
+      if (!payload.couponsCount || payload.couponsCount <= 0) {
         Logger.error(`generateCouponse] invalid count`);
         return;
       }
-      // TODO: predefine products for discountRate?
-      for(let i=0;i<couponsCount;i++) {
-        const newCoupon: Partial<Coupon>= {
-          uuid: v4(),
-          targetProductId,
-          discountRate,
-          validUntil,
-        };
 
-        await this.dataSource.manager.save(Coupon, newCoupon);
-        await this.redisClient.rpush(COUPON_QUEUE, newCoupon.uuid);
+      const entities = this.toCouponEntities(payload);
+      await this.dataSource.manager.save(Coupon, entities);
 
-        // FIXME: batch write for logs?
+      for (const entity of entities) {
+        await this.redisClient.rpush(COUPON_QUEUE, entity.uuid);
+
         this.eventEmitter.emit(EVENT_NAME_LOGGING, {
           transactionId,
-          data: { newCoupon }
+          data: { newCoupon: entity }
         });
       }
 
@@ -141,9 +136,28 @@ export class QueueReceiver extends WorkerHost {
     }
   }
 
+  private toCouponEntities(payload: CouponPayload): Partial<Coupon>[] {
+    const { targetProductId, discountRate, validUntil, couponsCount } = payload;
+
+    const entities: Partial<Coupon>[] = [];
+
+    for(let i=0;i<couponsCount;i++) {
+      const newCoupon: Partial<Coupon>= {
+        uuid: v4(),
+        targetProductId,
+        discountRate,
+        validUntil,
+      };
+
+      entities.push(newCoupon);
+    }
+
+    return entities;
+  }
+
   private async issueCoupon(data: unknown): Promise<void> {
     try {
-      const couponsPayload = data as IssueCouponsPayload;
+      const couponsPayload = data as IssueCouponsRequest;
       if (!couponsPayload) {
         Logger.error(`issueConpon] invalid payload`);
         return;
