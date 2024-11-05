@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: basic-backend
+  label:
+    app: basic-backend
+spec:
+  selector:
+    matchLabels:
+      app: basic-backend
+  template:
+    metadata:
+      labels:
+        app: basic-backend
+    spec:
+      containers:
+      - image: innfi/basic-backend:latest
+        name: basic-backend
+        env:
+        - name: REDIS_HOST
+          value: "fixme"
+        - name: REDIS_PORT
+          value: "fixme"
+        - name: PORT
+          value: "fixme"
+        - name: ES_URL
+          value: "fixme"
+        - name: ELASIC_PASSWORD
+          value: "fixme"
+        - name: CA_PATH
+          value: "fixme"
