@@ -1,7 +1,8 @@
-appVersion: apps/v1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: redis
+  namespace: barnacle
 spec:
   replicas: 1
   selector:

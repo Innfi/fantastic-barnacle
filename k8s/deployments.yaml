@@ -2,9 +2,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: basic-backend
-  label:
+  namespace: barnacle
+  labels:
     app: basic-backend
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: basic-backend
@@ -14,18 +16,21 @@ spec:
         app: basic-backend
     spec:
       containers:
-      - image: innfi/basic-backend:latest
-        name: basic-backend
+      - name: basic-backend
+        image: innfi/basic-backend:latest
+        ports:
+          - containerPort: 3000
+            protocol: TCP
         env:
-        - name: REDIS_HOST
-          value: "fixme"
-        - name: REDIS_PORT
-          value: "fixme"
-        - name: PORT
-          value: "fixme"
-        - name: ES_URL
-          value: "fixme"
-        - name: ELASIC_PASSWORD
-          value: "fixme"
-        - name: CA_PATH
-          value: "fixme"
+          - name: REDIS_HOST
+            value: "redis"
+          - name: REDIS_PORT
+            value: "6379"
+          - name: PORT
+            value: "3000"
+          - name: ES_URL
+            value: "fixme"
+          - name: ELASIC_PASSWORD
+            value: "fixme"
+          - name: CA_PATH
+            value: "fixme"
