@@ -35,34 +35,16 @@ spec:
           - name: CA_PATH
             value: "fixme"
 ---
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+kind: Service
 metadata:
-  name: workload-handler
+  name: basic-backend
   namespace: barnacle
-  labels:
-    app: workload-handler
 spec:
-  replicas: 1
+  type: NodePort
+  ports:
+    - port: 3000
+      targetPort: 3000
+      nodePort: 30020
   selector:
-    matchLabels:
-      app: workload-handler
-  template:
-    metadata:
-      labels:
-        app: workload-handler
-    spec:
-      containers:
-      - name: workload-handler
-        image: innfi/workload-handler:latest
-        ports:
-          - containerPort: 3010
-            protocol: TCP
-        env:
-          - name: REDIS_HOST
-            value: "redis"
-          - name: REDIS_PORT
-            value: "6379"
-          - name: PORT
-            value: "3010"
-          
+    app: basic-backend

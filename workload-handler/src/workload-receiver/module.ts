@@ -20,20 +20,26 @@ import { QueueReceiver } from './receiver';
       },
       readyLog: true,
     }),
-    ElasticsearchModule.register({
-      node: process.env.ES_URL ?? 'http://localhost:9200',
-      auth: {
-        username: 'elastic',
-        password: process.env.ELASTIC_PASSWORD ?? 'test'
-      },
-      tls: {
-        ca: fs.readFileSync(process.env.CA_PATH),
-        rejectUnauthorized: false,
-      },
-    }),
+    // ElasticsearchModule.register({
+    //   node: process.env.ES_URL ?? 'http://localhost:9200',
+    //   auth: {
+    //     username: 'elastic',
+    //     password: process.env.ELASTIC_PASSWORD ?? 'test'
+    //   },
+    //   tls: {
+    //     ca: fs.readFileSync(process.env.CA_PATH),
+    //     rejectUnauthorized: false,
+    //   },
+    // }),
   ],
-  providers: [QueueReceiver, EventLogWriterES],
-  exports: [QueueReceiver, EventLogWriterES],
+  providers: [
+    QueueReceiver, 
+    // EventLogWriterES
+  ],
+  exports: [
+    QueueReceiver, 
+    // EventLogWriterES
+  ],
 })
 export class WorkloadReceiverModule{}
 
