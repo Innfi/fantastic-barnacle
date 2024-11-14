@@ -18,10 +18,10 @@ esConfig:
     xpack.security.http.ssl.keystore.path: /usr/share/elasticsearch/config/certs/elastic-certificates.p12
 
 # Mount custom certificates
-secretMounts:
-  - name: elastic-certificates
-    secretName: elastic-certificates
-    path: /usr/share/elasticsearch/config/certs
+# secretMounts:
+#   - name: elastic-certificates
+#     secretName: elastic-certificates
+#     path: /usr/share/elasticsearch/config/certs
 
 # Set up basic authentication
 extraEnvs:
