@@ -1,0 +1,36 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: selfsigned-issuer
+  namespace: default
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: elasticsearch-cert
+spec:
+  secretName: elasticsearch-cert
+  duration: 8760h # 1 year
+  renewBefore: 360h # 15 days
+  subject:
+    organizations:
+      - Elastic
+  commonName: elasticsearch-cluster
+  isCA: false
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS1
+    size: 2048
+  usages:
+    - server auth
+    - client auth
+  dnsNames:
+    - elasticsearch-cluster
+    - elasticsearch-cluster.default.svc.cluster.local
+  issuerRef:
+    name: selfsigned-issuer
+    kind: Issuer
+    group: cert-manager.io

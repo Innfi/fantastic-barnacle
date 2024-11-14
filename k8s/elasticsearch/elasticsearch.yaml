@@ -1,16 +1,15 @@
 apiVersion: elasticsearch.k8s.elastic.co/v1
 kind: Elasticsearch
 metadata:
-  name: elasticsearch-cluster
-  namespace: elastic-stack
+  name: elasticsearch-cluster 
 spec:
-  version: 7.15.0
+  version: 8.16.0
   nodeSets:
   - name: default
-    count: 3
+    count: 1
     config:
       node.store.allow_mmap: false
   http:
     tls:
       certificate:
-        secretName: elasticsearch-certificates
+        secretName: elasticsearch-cert
