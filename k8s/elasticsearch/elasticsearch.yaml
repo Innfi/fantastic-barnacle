@@ -23,17 +23,18 @@ spec:
     count: 1
     config:
       node.store.allow_mmap: false
+    volumeClaimTemplates:
+    - metadata:
+        name: elasticsearch-data
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 5Gi
+        storageClassName: standard
   http:
     tls:
       certificate:
         secretName: elasticsearch-cert
-  volumeClaimTemplates:
-  - metadata:
-      name: elasticsearch-data
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        request:
-          storage: 5Gi
-      storageClassName: standard
+ 
