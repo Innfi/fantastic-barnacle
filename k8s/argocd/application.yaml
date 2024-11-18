@@ -1,0 +1,8 @@
+project: default
+source:
+  repoURL: https://github.com/Innfi/fantastic-barnacle
+  path: k8s
+  targetRevision: HEAD
+destination:
+  server: https://kubernetes.default.svc
+  namespace: barnacle

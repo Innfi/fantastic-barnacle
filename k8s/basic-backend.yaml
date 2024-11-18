@@ -6,7 +6,7 @@ metadata:
   labels:
     app: basic-backend
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: basic-backend
@@ -29,9 +29,12 @@ spec:
           - name: PORT
             value: "3000"
           - name: ES_URL
-            value: "fixme"
+            value: "elasticsearch-cluster.default.svc.cluster.local"
           - name: ELASIC_PASSWORD
-            value: "fixme"
+            valueFrom:
+              secretKeyRef:
+                name: elasticsearch-cluster-es-elastic-user
+                key: elastic
           - name: CA_PATH
             value: "fixme"
 ---

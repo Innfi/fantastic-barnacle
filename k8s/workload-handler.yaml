@@ -6,7 +6,7 @@ metadata:
   labels:
     app: workload-handler
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: workload-handler
@@ -39,6 +39,15 @@ spec:
               secretKeyRef:
                 name: mysql-secret
                 key: mysql-root-password
+          - name: ES_URL
+            value: "elasticsearch-cluster.default.svc.cluster.local"
+          - name: ELASIC_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: elasticsearch-cluster-es-elastic-user
+                key: elastic
+          - name: CA_PATH
+            value: "fixme"
 ---
 apiVersion: v1
 kind: Service
