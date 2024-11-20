@@ -40,7 +40,7 @@ spec:
                 name: mysql-secret
                 key: mysql-root-password
           - name: ES_URL
-            value: "elasticsearch-cluster.default.svc.cluster.local"
+            value: "https://elasticsearch-cluster.default.svc.cluster.local:9200"
           - name: ELASIC_PASSWORD
             valueFrom:
               secretKeyRef:
