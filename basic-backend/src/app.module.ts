@@ -31,28 +31,28 @@ import { CouponModule } from './coupon/module';
       readyLog: true,
     }),
     EventEmitterModule.forRoot(),
-    // ElasticsearchModule.register({
-    //   node: process.env.ES_URL ?? 'http://localhost:9200',
-    //   auth: {
-    //     username: 'elastic',
-    //     password: process.env.ELASTIC_PASSWORD ?? 'test'
-    //   },
-    //   tls: {
-    //     ca: fs.readFileSync(process.env.CA_PATH),
-    //     rejectUnauthorized: false,
-    //   },
-    // }),
+    ElasticsearchModule.register({
+      node: process.env.ES_URL ?? 'http://localhost:9200',
+      auth: {
+        username: 'elastic',
+        password: process.env.ELASTIC_PASSWORD ?? 'test'
+      },
+      tls: {
+        ca: fs.readFileSync(process.env.CA_PATH),
+        rejectUnauthorized: false,
+      },
+    }),
     ResponseReceiverModule,
     CouponModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
-    // LogWriterES,
-    // {
-    //   provide: APP_INTERCEPTOR,
-    //   useClass: LoggingInterceptor,
-    // }
+    LogWriterES,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
+    }
   ],
 })
 export class AppModule {}

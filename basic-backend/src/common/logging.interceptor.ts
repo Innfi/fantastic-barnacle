@@ -16,26 +16,26 @@ export class LoggingInterceptor implements NestInterceptor {
   }
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    return next.handle();
+    // return next.handle();
 
-    // const httpContext = context.switchToHttp();
-    // const request: Request = httpContext.getRequest();
+    const httpContext = context.switchToHttp();
+    const request: Request = httpContext.getRequest();
 
-    // return next
-    //   .handle()
-    //   .pipe(
-    //     tap((response: object) => {
-    //       this.eventEmitter.emit(EVENT_LOG_HTTP, { 
-    //         request: {
-    //           transactionId: request.header['transactionId'],
-    //           path: request.path,
-    //           query: request.query,
-    //           params: request.params,
-    //           body: request.body,
-    //         }, 
-    //         response 
-    //       } as HttpLogPayload);
-    //     }),
-    //   );
+    return next
+      .handle()
+      .pipe(
+        tap((response: object) => {
+          this.eventEmitter.emit(EVENT_LOG_HTTP, { 
+            request: {
+              transactionId: request.header['transactionId'],
+              path: request.path,
+              query: request.query,
+              params: request.params,
+              body: request.body,
+            }, 
+            response 
+          } as HttpLogPayload);
+        }),
+      );
   }
 }

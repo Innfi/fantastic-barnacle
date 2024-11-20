@@ -21,6 +21,10 @@ spec:
         ports:
           - containerPort: 3000
             protocol: TCP
+        volumeMounts:
+        - name: secret-ca
+          mountPath: /etc/barnacle-ca
+          readonly: true
         env:
           - name: REDIS_HOST
             value: "redis"
@@ -36,7 +40,11 @@ spec:
                 name: elasticsearch-cluster-es-elastic-user
                 key: elastic
           - name: CA_PATH
-            value: "fixme"
+            value: "/etc/barnacle-ca/ca.crt"
+      volumes:
+      - name: secret-ca
+        secret:
+          secretName: elasticsearch-cert
 ---
 apiVersion: v1
 kind: Service
