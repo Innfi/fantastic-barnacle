@@ -1,16 +1,16 @@
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: elasticsearch-data
-spec:
-  capacity:
-    storage: 5Gi
-  accessModes:
-    - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Retain
-  storageClassName: standard
-  hostPath:
-    path: "/d/workspace/fantastic-barnacle/data/es"
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+#   name: elasticsearch-data
+# spec:
+#   capacity:
+#     storage: 5Gi
+#   accessModes:
+#     - ReadWriteOnce
+#   persistentVolumeReclaimPolicy: Retain
+#   storageClassName: standard
+#   hostPath:
+#     path: "/d/workspace/fantastic-barnacle/data/es"
 ---
 apiVersion: elasticsearch.k8s.elastic.co/v1
 kind: Elasticsearch
@@ -23,16 +23,16 @@ spec:
     count: 1
     config:
       node.store.allow_mmap: false
-    volumeClaimTemplates:
-    - metadata:
-        name: elasticsearch-data
-      spec:
-        accessModes:
-        - ReadWriteOnce
-        resources:
-          requests:
-            storage: 5Gi
-        storageClassName: standard
+#     volumeClaimTemplates:
+#     - metadata:
+#         name: elasticsearch-data
+#       spec:
+#         accessModes:
+#         - ReadWriteOnce
+#         resources:
+#           requests:
+#             storage: 5Gi
+#         storageClassName: standard
   http:
     tls:
       certificate:

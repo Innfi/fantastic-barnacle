@@ -17,9 +17,8 @@ spec:
   renewBefore: 360h # 15 days
   subject:
     organizations:
-      - Elastic
-  commonName: elasticsearch-cluster
-  isCA: false
+      - elasticsearch-cluster
+  isCA: true
   privateKey:
     algorithm: RSA
     encoding: PKCS1
@@ -28,8 +27,9 @@ spec:
     - server auth
     - client auth
   dnsNames:
-    - elasticsearch-cluster
-    - elasticsearch-cluster.default.svc.cluster.local
+    - elasticsearch-cluster-es-http
+    - elasticsearch-cluster-es-http.default
+    - elasticsearch-cluster-es-http.default.svc.cluster.local
   issuerRef:
     name: selfsigned-issuer
     kind: Issuer
