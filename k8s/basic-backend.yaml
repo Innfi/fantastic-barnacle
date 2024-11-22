@@ -6,7 +6,7 @@ metadata:
   labels:
     app: basic-backend
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: basic-backend
@@ -24,7 +24,6 @@ spec:
         volumeMounts:
         - name: secret-ca
           mountPath: /etc/barnacle-ca
-          readonly: true
         env:
           - name: REDIS_HOST
             value: "redis"
@@ -37,14 +36,14 @@ spec:
           - name: ELASIC_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: elasticsearch-cluster-es-elastic-user
+                name: barnacle-es-elastic-user
                 key: elastic
           - name: CA_PATH
             value: "/etc/barnacle-ca/ca.crt"
       volumes:
       - name: secret-ca
         secret:
-          secretName: elasticsearch-cert
+          secretName: barnacle-es-cert
 ---
 apiVersion: v1
 kind: Service

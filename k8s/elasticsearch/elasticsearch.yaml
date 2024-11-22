@@ -15,7 +15,7 @@
 apiVersion: elasticsearch.k8s.elastic.co/v1
 kind: Elasticsearch
 metadata:
-  name: elasticsearch-cluster 
+  name: barnacle
 spec:
   version: 8.16.0
   nodeSets:
@@ -36,5 +36,5 @@ spec:
   http:
     tls:
       certificate:
-        secretName: elasticsearch-cert
+        secretName: barnacle-es-cert
  

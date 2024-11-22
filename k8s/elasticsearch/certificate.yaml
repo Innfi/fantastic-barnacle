@@ -10,14 +10,14 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: elasticsearch-cert
+  name: barnacle-es-cert
 spec:
-  secretName: elasticsearch-cert
+  secretName: barnacle-es-cert
   duration: 8760h # 1 year
   renewBefore: 360h # 15 days
   subject:
     organizations:
-      - elasticsearch-cluster
+      - barnacle
   isCA: true
   privateKey:
     algorithm: RSA
@@ -27,9 +27,9 @@ spec:
     - server auth
     - client auth
   dnsNames:
-    - elasticsearch-cluster-es-http
-    - elasticsearch-cluster-es-http.default
-    - elasticsearch-cluster-es-http.default.svc.cluster.local
+    - barnacle-es-http
+    - barnacle-es-http.default
+    - barnacle-es-http.default.svc.cluster.local
   issuerRef:
     name: selfsigned-issuer
     kind: Issuer
