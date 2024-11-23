@@ -3,7 +3,7 @@ import { Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bullmq';
 import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import * as fs from 'fs';
+import { readFileSync } from 'fs';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
 
 import { LogWriterES } from './common/log.writer.es/writer.es';
@@ -31,28 +31,28 @@ import { CouponModule } from './coupon/module';
       readyLog: true,
     }),
     EventEmitterModule.forRoot(),
-    // ElasticsearchModule.register({
-    //   node: process.env.ES_URL ?? 'http://localhost:9200',
-    //   auth: {
-    //     username: 'elastic',
-    //     password: process.env.ELASTIC_PASSWORD ?? 'test'
-    //   },
-    //   tls: {
-    //     ca: fs.readFileSync(process.env.CA_PATH),
-    //     rejectUnauthorized: false,
-    //   },
-    // }),
+    ElasticsearchModule.register({
+      node: process.env.ES_URL ?? 'http://localhost:9200',
+      auth: {
+        username: 'elastic',
+        password: process.env.ELASTIC_PASSWORD ?? 'test'
+      },
+      tls: {
+        ca: readFileSync(process.env.CA_PATH),
+        rejectUnauthorized: false,
+      },
+    }),
     ResponseReceiverModule,
     CouponModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
-    // LogWriterES,
-    // {
-    //   provide: APP_INTERCEPTOR,
-    //   useClass: LoggingInterceptor,
-    // }
+    LogWriterES,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
+    }
   ],
 })
 export class AppModule {}

@@ -40,11 +40,14 @@ spec:
                 name: mysql-secret
                 key: mysql-root-password
           - name: ES_URL
-            value: "https://elasticsearch-cluster.default.svc.cluster.local:9200"
-          - name: ELASIC_PASSWORD
-            value: "fixme"
+            value: "https://barnacle-es-http.default.svc.cluster.local:9200"
+          - name: ELASTIC_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: barnacle-es-elastic-user
+                key: elastic
           - name: CA_PATH
-            value: "fixme"
+            value: "/etc/barnacle-ca/ca.crt"
 ---
 apiVersion: v1
 kind: Service

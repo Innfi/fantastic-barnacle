@@ -19,16 +19,15 @@ export class EventLogWriterES {
   async transactionEventHandler(payload: TransactionLoggingEventPayload): Promise<void> {
     Logger.log(`EventWriteMongo.transactionEventHandler] ${JSON.stringify(payload)}`);
 
-    return;
-    // const result = await this.esService.index({
-    //   index: INDEX_NAME,
-    //   document: {
-    //     'esCreatedAt': new Date(),
-    //     'transactionId': payload.transactionId,
-    //     'data': payload.data,
-    //   },
-    // });
+    const result = await this.esService.index({
+      index: INDEX_NAME,
+      document: {
+        'esCreatedAt': new Date(),
+        'transactionId': payload.transactionId,
+        'data': payload.data,
+      },
+    });
 
-    // Logger.log(`EventLogWriterES.transactionEventHandler] document created: ${result._id}`);
+    Logger.log(`EventLogWriterES.transactionEventHandler] document created: ${result._id}`);
   }
 }
