@@ -48,11 +48,11 @@ import { CouponModule } from './coupon/module';
   controllers: [AppController],
   providers: [
     AppService,
-    LogWriterES,
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: LoggingInterceptor,
-    }
+    // LogWriterES,
+    // {
+    //   provide: APP_INTERCEPTOR,
+    //   useClass: LoggingInterceptor,
+    // }
   ],
 })
 export class AppModule {}
