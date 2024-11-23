@@ -42,10 +42,7 @@ spec:
           - name: ES_URL
             value: "https://elasticsearch-cluster.default.svc.cluster.local:9200"
           - name: ELASIC_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: elasticsearch-cluster-es-elastic-user
-                key: elastic
+            value: "fixme"
           - name: CA_PATH
             value: "fixme"
 ---
