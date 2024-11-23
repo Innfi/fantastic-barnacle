@@ -34,10 +34,7 @@ spec:
           - name: ES_URL
             value: "https://barnacle-es-http.default.svc.cluster.local:9200"
           - name: ELASIC_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: barnacle-es-elastic-user
-                key: elastic
+            value: "fixme"
           - name: CA_PATH
             value: "/etc/barnacle-ca/ca.crt"
       volumes:
