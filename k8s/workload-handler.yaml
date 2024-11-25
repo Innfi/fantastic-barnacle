@@ -21,6 +21,9 @@ spec:
         ports:
           - containerPort: 3010
             protocol: TCP
+        volumeMounts:
+        - name: secret-ca
+          mountPath: /etc/barnacle-ca
         env:
           - name: REDIS_HOST
             value: "redis"
@@ -48,6 +51,10 @@ spec:
                 key: elastic
           - name: CA_PATH
             value: "/etc/barnacle-ca/ca.crt"
+      volumes:
+      - name: secret-ca
+        secret:
+          secretName: barnacle-es-cert
 ---
 apiVersion: v1
 kind: Service
