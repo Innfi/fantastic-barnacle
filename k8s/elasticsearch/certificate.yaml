@@ -3,7 +3,7 @@ apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
   name: selfsigned-issuer
-  namespace: default
+  namespace: elasticsearch
 spec:
   selfSigned: {}
 ---
@@ -11,6 +11,7 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: barnacle-es-cert
+  namespace: elasticsearch
 spec:
   secretName: barnacle-es-cert
   duration: 8760h # 1 year
@@ -28,8 +29,8 @@ spec:
     - client auth
   dnsNames:
     - barnacle-es-http
-    - barnacle-es-http.default
-    - barnacle-es-http.default.svc.cluster.local
+    - barnacle-es-http.elasticsearch
+    - barnacle-es-http.elasticsearch.svc.cluster.local
   issuerRef:
     name: selfsigned-issuer
     kind: Issuer
@@ -37,6 +38,6 @@ spec:
   secretTemplate:
     annotations:
       reflector.v1.k8s.emberstack.com/reflection-allowed: "true"
-      reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces: "elasticsearch,barnacle"
+      reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces: "barnacle"
       reflector.v1.k8s.emberstack.com/reflection-auto-enabled: "true" 
-      reflector.v1.k8s.emberstack.com/reflection-auto-namespaces: "elasticsearch,barnacle"
+      reflector.v1.k8s.emberstack.com/reflection-auto-namespaces: "barnacle"

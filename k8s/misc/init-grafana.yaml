@@ -1,4 +1,4 @@
 #!/bin/sh
 helm repo add grafana https://grafana.github.io/helm-charts
 helm repo update
-helm install grafana-barnacle grafana/grafana
+helm install grafana-barnacle grafana/grafana --namespace metrics

@@ -1,2 +1,2 @@
 #!/bin/sh
-helm upgrade --install reflector emberstack/reflector
+helm upgrade --install reflector emberstack/reflector -n reflector
