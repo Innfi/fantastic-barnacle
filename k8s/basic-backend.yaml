@@ -32,7 +32,7 @@ spec:
           - name: PORT
             value: "3000"
           - name: ES_URL
-            value: "https://barnacle-es-http.elasticsearch.svc.cluster.local:9200"
+            value: "https://elasticsearch-es-http.elasticsearch.svc.cluster.local:9200"
           - name: ELASTIC_PASSWORD
             valueFrom:
               secretKeyRef:
@@ -43,7 +43,7 @@ spec:
       volumes:
       - name: secret-ca
         secret:
-          secretName: barnacle-es-cert
+          secretName: elasticsearch-es-cert
 ---
 apiVersion: v1
 kind: Service

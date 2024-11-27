@@ -16,7 +16,7 @@ apiVersion: elasticsearch.k8s.elastic.co/v1
 kind: Elasticsearch
 metadata:
   name: barnacle
-  namespace: elasticsearch
+#  namespace: elasticsearch
 spec:
   version: 8.16.0
   nodeSets:
@@ -24,6 +24,10 @@ spec:
     count: 1
     config:
       node.store.allow_mmap: false
+  http:
+    tls:
+      certificate:
+        secretName: barnacle-es-cert
 #     volumeClaimTemplates:
 #     - metadata:
 #         name: elasticsearch-data
@@ -34,8 +38,4 @@ spec:
 #           requests:
 #             storage: 5Gi
 #         storageClassName: standard
-  http:
-    tls:
-      certificate:
-        secretName: barnacle-es-cert
  
