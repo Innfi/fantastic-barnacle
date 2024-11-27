@@ -7,6 +7,9 @@ simple services for deployment exercises: implementing a coupon managing service
  (generate, issue, expire, etc)
 
 # TODO
+replace bullmq with kafka 
+replace workload handler to go-based mq handler
+
 watch and fix the service components as request rates scaling up 
 
 look up possible alternatives of tool in terms of key elements:
