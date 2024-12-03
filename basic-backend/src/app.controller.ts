@@ -23,4 +23,15 @@ export class AppController {
 
     return await this.appService.enqueData(payload, transactionId);
   }
+
+  @Post('v2/enque')
+  async enqueMessageV2(
+    @Req() request: Request,
+    @Body() payload: EnqueMessagePayload
+  ): Promise<EnqueMessageResponse> {
+    const transactionId = request.header['transactionId'] as string;
+    Logger.log(`transactionId: ${transactionId}`);
+
+    return await this.appService.enqueData(payload, transactionId);
+  }
 }

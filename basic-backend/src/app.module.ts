@@ -12,6 +12,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ResponseReceiverModule } from './response-receiver/module';
 import { CouponModule } from './coupon/module';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [
@@ -30,6 +31,21 @@ import { CouponModule } from './coupon/module';
       },
       readyLog: true,
     }),
+    ClientsModule.register([
+      {
+        name: 'KAFKA_CLIENT',
+        transport: Transport.KAFKA,
+        options: {
+          client: {
+            clientId: 'basic-backend',
+            brokers: [process.env.KAFKA_BROKER ?? 'localhost:9092'],
+          },
+          consumer: {
+            groupId: 'barnacle1'
+          },
+        }
+      },
+    ]),
     EventEmitterModule.forRoot(),
     ElasticsearchModule.register({
       node: process.env.ES_URL ?? 'http://localhost:9200',
