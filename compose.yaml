@@ -176,9 +176,50 @@ services:
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
       - ELASTIC_HOSTS=https://es01:9200
       - KIBANA_HOSTS=http://kibana:5601
+  kafka:
+    image: bitnami/kafka:3.1.0
+    container_name: kafka
+    command:
+      - 'sh'
+      - '-c'
+      - '/opt/bitnami/scripts/kafka/setup.sh && kafka-storage.sh format --config "$${KAFKA_CONF_FILE}" --cluster-id "lkorDA4qT6W1K_dk0LHvtg" --ignore-formatted && /opt/bitnami/scripts/kafka/run.sh'
+    environment:
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_NODE_ID=1
+      - KAFKA_CFG_BROKER_ID=1
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@127.0.0.1:9093
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,INTERNAL:PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_LOG_DIRS=/tmp/logs
+      - KAFKA_CFG_PROCESS_ROLES=broker,controller
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093,INTERNAL://:9094
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://127.0.0.1:9092,INTERNAL://kafka:9094
+    ports:
+      - "0.0.0.0:9092:9092"
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-topics.sh --list --bootstrap-server localhost:9092 || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+  kafka-ui:
+    depends_on:
+      kafka:
+        condition: service_healthy
+    image: provectuslabs/kafka-ui
+    container_name: kafka-ui
+    ports:
+      - "8080:8080"
+    restart: "always"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: "lkorDA4qT6W1K_dk0LHvtgg"
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9094
 
   basic-backend:
     depends_on:
+      es01:
+        condition: service_healthy
+      kakfa:
+        condition: service_healthy
       es01:
         condition: service_healthy
       redis:
@@ -189,19 +230,22 @@ services:
     volumes:
       - certs:/certs
     environment:
-      - REDIS_HOST=redis-compose
-      - REDIS_PORT=6379
       - PORT=3001
       - ES_URL=https://es01:9200
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
       - CA_PATH=/certs/ca/ca.crt
+      - KAFKA_BROKER=kafka:9092
+      - REDIS_HOST=redis-compose
+      - REDIS_PORT=6379
   workload-handler:
     depends_on:
       rdb:
         condition: service_healthy
-      redis:
+      kakfa:
         condition: service_healthy
       es01:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     build: ./workload-handler
     ports:
@@ -209,8 +253,6 @@ services:
     volumes:
       - certs:/certs
     environment:
-      - REDIS_HOST=redis-compose
-      - REDIS_PORT=6379
       - PORT=3011
       - RDB_HOST=mysql-compose
       - RDB_PORT=3306
@@ -219,6 +261,9 @@ services:
       - ES_URL=https://es01:9200
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
       - CA_PATH=/certs/ca/ca.crt
+      - KAFKA_BROKER=kafka:9092
+      - REDIS_HOST=redis-compose
+      - REDIS_PORT=6379
 
 volumes:
  certs:

@@ -10,31 +10,7 @@ import { RedisService } from "@liaoliaots/nestjs-redis";
 import { EVENT_NAME_LOGGING } from "../common/log.writer.es/writer.es";
 import { MessageHistory } from "./message.entity";
 import { Coupon } from "./coupon.entity";
-
-interface MessagePayload {
-  transactionId: string;
-  messageId: number;
-}
-
-interface CouponPayload {
-  targetProductId: number;
-  discountRate: number;
-  validUntil: Date;
-	couponsCount: number;
-}
-
-interface GenerateCouponsRequest {
-  transactionId: string;
-  payload: CouponPayload;
-}
-
-interface IssueCouponsRequest {
-  transactionId: string;
-  payload: {
-    targetProductId: number;
-    userId: number;
-  };
-}
+import { MessagePayload, GenerateCouponsRequest, CouponPayload, IssueCouponsRequest } from "./interfaces";
 
 const COUPON_QUEUE = 'coupon_queue';
 
