@@ -13,16 +13,16 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @Post('enque')
-  async enqueMessage(
-    @Req() request: Request,
-    @Body() payload: EnqueMessagePayload
-  ): Promise<EnqueMessageResponse> {
-    const transactionId = request.header['transactionId'] as string;
-    Logger.log(`transactionId: ${transactionId}`);
+  // @Post('enque')
+  // async enqueMessage(
+  //   @Req() request: Request,
+  //   @Body() payload: EnqueMessagePayload
+  // ): Promise<EnqueMessageResponse> {
+  //   const transactionId = request.header['transactionId'] as string;
+  //   Logger.log(`transactionId: ${transactionId}`);
 
-    return await this.appService.enqueData(payload, transactionId);
-  }
+  //   return await this.appService.enqueData(payload, transactionId);
+  // }
 
   @Post('v2/enque')
   async enqueMessageV2(
@@ -32,6 +32,6 @@ export class AppController {
     const transactionId = request.header['transactionId'] as string;
     Logger.log(`transactionId: ${transactionId}`);
 
-    return await this.appService.enqueData(payload, transactionId);
+    return await this.appService.enqueDataV2(payload, transactionId);
   }
 }

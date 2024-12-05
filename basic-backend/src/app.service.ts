@@ -8,7 +8,7 @@ import { EnqueMessagePayload, EnqueMessageResponse } from './entity';
 @Injectable()
 export class AppService {
   constructor(
-    @InjectQueue('request_queue') private queue: Queue,
+    // @InjectQueue('request_queue') private queue: Queue,
     @Inject('KAFKA_CLIENT') private readonly kafkaClient: ClientKafka,
   ) {}
 
@@ -16,19 +16,19 @@ export class AppService {
     return 'Hello World!';
   }
 
-  async enqueData(payload: EnqueMessagePayload, transactionId: string): Promise<EnqueMessageResponse> {
-    const { messageId } = payload;
+  // async enqueData(payload: EnqueMessagePayload, transactionId: string): Promise<EnqueMessageResponse> {
+  //   const { messageId } = payload;
 
-    await this.queue.add('message', {
-      messageId,
-      transactionId,
-    });
+  //   await this.queue.add('message', {
+  //     messageId,
+  //     transactionId,
+  //   });
 
-    return {
-      result: 'success',
-      receivedMessageId: messageId,
-    };
-  }
+  //   return {
+  //     result: 'success',
+  //     receivedMessageId: messageId,
+  //   };
+  // }
 
   async enqueDataV2(payload: EnqueMessagePayload, transactionId: string): Promise<EnqueMessageResponse> {
     Logger.log(`AppService.enqueDataV2] `);

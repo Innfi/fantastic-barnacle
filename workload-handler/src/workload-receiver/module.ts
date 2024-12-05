@@ -13,15 +13,15 @@ import { WorkloadReceiverController } from './controller';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([MessageHistory]),
-    BullModule.registerQueue({ name: 'response_queue' }),
-    RedisModule.forRoot({
-      config: {
-        host: process.env.REDIS_HOST ?? 'localhost',
-        port: process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT) : 6379,
-      },
-      readyLog: true,
-    }),
+    // TypeOrmModule.forFeature([MessageHistory]),
+    // BullModule.registerQueue({ name: 'response_queue' }),
+    // RedisModule.forRoot({
+    //   config: {
+    //     host: process.env.REDIS_HOST ?? 'localhost',
+    //     port: process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT) : 6379,
+    //   },
+    //   readyLog: true,
+    // }),
     ClientsModule.register([
       {
         name: 'KAFKA_CLIENT',
@@ -37,26 +37,26 @@ import { WorkloadReceiverController } from './controller';
         }
       },
     ]),
-    ElasticsearchModule.register({
-      node: process.env.ES_URL ?? 'http://localhost:9200',
-      auth: {
-        username: 'elastic',
-        password: process.env.ELASTIC_PASSWORD ?? 'test'
-      },
-      tls: {
-        ca: fs.readFileSync(process.env.CA_PATH),
-        rejectUnauthorized: false,
-      },
-    }),
+    // ElasticsearchModule.register({
+    //   node: process.env.ES_URL ?? 'http://localhost:9200',
+    //   auth: {
+    //     username: 'elastic',
+    //     password: process.env.ELASTIC_PASSWORD ?? 'test'
+    //   },
+    //   tls: {
+    //     ca: fs.readFileSync(process.env.CA_PATH),
+    //     rejectUnauthorized: false,
+    //   },
+    // }),
   ],
   controllers: [WorkloadReceiverController],
   providers: [
-    QueueReceiver, 
-    EventLogWriterES
+    // QueueReceiver, 
+    // EventLogWriterES
   ],
   exports: [
-    QueueReceiver, 
-    EventLogWriterES
+    // QueueReceiver, 
+    // EventLogWriterES
   ],
 })
 export class WorkloadReceiverModule{}
