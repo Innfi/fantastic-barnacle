@@ -234,7 +234,6 @@ services:
       - ES_URL=https://es01:9200
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
       - CA_PATH=/certs/ca/ca.crt
-      - KAFKA_BROKER=kafka:9092
       - REDIS_HOST=redis-compose
       - REDIS_PORT=6379
   workload-handler:
@@ -261,7 +260,6 @@ services:
       - ES_URL=https://es01:9200
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
       - CA_PATH=/certs/ca/ca.crt
-      - KAFKA_BROKER=kafka:9092
       - REDIS_HOST=redis-compose
       - REDIS_PORT=6379
 
