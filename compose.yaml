@@ -180,8 +180,6 @@ services:
     depends_on:
       es01:
         condition: service_healthy
-      kakfa:
-        condition: service_healthy
       es01:
         condition: service_healthy
       redis:
@@ -201,8 +199,6 @@ services:
   workload-handler:
     depends_on:
       rdb:
-        condition: service_healthy
-      kakfa:
         condition: service_healthy
       es01:
         condition: service_healthy
