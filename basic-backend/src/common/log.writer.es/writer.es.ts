@@ -5,6 +5,7 @@ import { ElasticsearchService } from "@nestjs/elasticsearch";
 import { EVENT_LOG_HTTP, EVENT_WORKLOAD_HANDLER_RESP, HttpLogPayload } from "../log.payload";
 
 const INDEX_NAME = 'barnacle-log';
+const ACTOR = 'basic-backend';
 
 @Injectable()
 export class LogWriterES {
@@ -19,6 +20,7 @@ export class LogWriterES {
       index: INDEX_NAME,
       document: {
         'esCreatedAt': new Date(),
+        'actor': ACTOR.toString(),
         'transactionId': request.transactionId,
         'data': {
           'request': {
@@ -26,7 +28,6 @@ export class LogWriterES {
             'query': request.query,
             'params': request.params,
             'body': request.body,
-            'transactionId': request.transactionId, // redundant?
           },
           'response': response,
         },
@@ -44,6 +45,7 @@ export class LogWriterES {
       index: INDEX_NAME,
       document: {
         'esCreatedAt': new Date(),
+        'actor': ACTOR.toString(),
         'transactionId': payload.transactionId,
         'data': {
           'query.resp': payload,

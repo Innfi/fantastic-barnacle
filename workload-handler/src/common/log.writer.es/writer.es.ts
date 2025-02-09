@@ -5,6 +5,7 @@ import { OnEvent } from "@nestjs/event-emitter";
 export const EVENT_NAME_LOGGING = 'transaction';
 
 const INDEX_NAME = 'barnacle-log';
+const ACTOR = 'workload-handler';
 
 export interface TransactionLoggingEventPayload {
   transactionId: string;
@@ -23,6 +24,7 @@ export class EventLogWriterES {
       index: INDEX_NAME,
       document: {
         'esCreatedAt': new Date(),
+        'actor': ACTOR.toString(),
         'transactionId': payload.transactionId,
         'data': payload.data,
       },
