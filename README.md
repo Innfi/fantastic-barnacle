@@ -6,6 +6,8 @@
 simple services for deployment exercises: implementing a coupon managing service
  (generate, issue, expire, etc)
 
+![fantastic-barnacle](https://github.com/Innfi/fantastic-barnacle/blob/main/png/fantastic-barnacle.png)
+
 # TODO
 
 # DONE
