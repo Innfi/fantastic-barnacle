@@ -1,14 +1,17 @@
 import type { AwsResource } from '@/types/aws'
 import { cn } from '@/lib/utils'
+import { Badge, type BadgeProps } from '@/components/ui/badge'
 
-const TYPE_COLORS: Record<string, string> = {
-  vpc:              'bg-blue-900/60 border-blue-500',
-  subnet:           'bg-blue-800/50 border-blue-400',
-  internet_gateway: 'bg-purple-900/60 border-purple-500',
-  security_group:   'bg-yellow-900/40 border-yellow-600',
-  ec2:              'bg-green-900/60 border-green-500',
-  alb:              'bg-orange-900/60 border-orange-500',
-  rds:              'bg-red-900/60 border-red-500',
+type BadgeVariant = BadgeProps['variant']
+
+const TYPE_VARIANTS: Record<string, BadgeVariant> = {
+  vpc:              'blue',
+  subnet:           'blue',
+  internet_gateway: 'purple',
+  security_group:   'yellow',
+  ec2:              'green',
+  alb:              'orange',
+  rds:              'red',
 }
 
 const TYPE_LABELS: Record<string, string> = {
@@ -28,7 +31,7 @@ interface ResourceBoxProps {
 }
 
 export default function ResourceBox({ resource, selected, onClick }: ResourceBoxProps) {
-  const colorClass = TYPE_COLORS[resource.type] ?? 'bg-gray-800 border-gray-600'
+  const variant = TYPE_VARIANTS[resource.type] ?? 'default'
 
   return (
     <div
@@ -36,14 +39,21 @@ export default function ResourceBox({ resource, selected, onClick }: ResourceBox
       className={cn(
         'border rounded-sm px-3 py-2 cursor-pointer select-none transition-all',
         'hover:brightness-125',
-        colorClass,
         selected && 'ring-2 ring-white ring-offset-1 ring-offset-gray-950',
+        // border color matches badge variant
+        variant === 'blue'   && 'bg-blue-900/60 border-blue-500',
+        variant === 'purple' && 'bg-purple-900/60 border-purple-500',
+        variant === 'yellow' && 'bg-yellow-900/40 border-yellow-600',
+        variant === 'green'  && 'bg-green-900/60 border-green-500',
+        variant === 'orange' && 'bg-orange-900/60 border-orange-500',
+        variant === 'red'    && 'bg-red-900/60 border-red-500',
+        variant === 'default' && 'bg-gray-800 border-gray-600',
       )}
     >
-      <div className="text-[10px] text-gray-400 font-mono uppercase tracking-wider">
+      <Badge variant={variant}>
         {TYPE_LABELS[resource.type] ?? resource.type}
-      </div>
-      <div className="text-xs text-white font-medium truncate max-w-[160px]">
+      </Badge>
+      <div className="text-xs text-white font-medium truncate max-w-[160px] mt-1">
         {resource.name}
       </div>
     </div>
