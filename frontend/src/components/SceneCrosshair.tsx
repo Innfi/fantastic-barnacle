@@ -2,31 +2,11 @@ import { useEffect, useRef, useState, type RefObject } from 'react'
 
 interface Props {
   containerRef: RefObject<HTMLDivElement | null>
-  rotateZ: number
 }
 
 interface Cursor { cx: number; cy: number }
 
-function axisAngles(rotateZDeg: number) {
-  const rz = (rotateZDeg * Math.PI) / 180
-  const rx = (55 * Math.PI) / 180
-  const cosRx = Math.cos(rx)
-
-  // project 3D unit vectors through rotateZ then rotateX → screen (x,y)
-  const xAxis = { x: Math.cos(rz),  y: -Math.sin(rz) * cosRx }
-  const yAxis = { x: -Math.sin(rz), y:  Math.cos(rz) * cosRx }
-  const zAxis = { x: 0,             y: -Math.sin(rx) }
-
-  return {
-    x: Math.atan2(xAxis.y, xAxis.x),
-    y: Math.atan2(yAxis.y, yAxis.x),
-    z: Math.atan2(zAxis.y, zAxis.x),
-  }
-}
-
-const R = 10000
-
-export default function SceneCrosshair({ containerRef, rotateZ }: Props) {
+export default function SceneCrosshair({ containerRef }: Props) {
   const [cursor, setCursor] = useState<Cursor | null>(null)
   const [size, setSize] = useState({ w: 0, h: 0 })
   const svgRef = useRef<SVGSVGElement>(null)
@@ -53,14 +33,6 @@ export default function SceneCrosshair({ containerRef, rotateZ }: Props) {
   if (!cursor || size.w === 0) return null
 
   const { cx, cy } = cursor
-  const angles = axisAngles(rotateZ)
-
-  const line = (θ: number) => ({
-    x1: cx - R * Math.cos(θ),
-    y1: cy - R * Math.sin(θ),
-    x2: cx + R * Math.cos(θ),
-    y2: cy + R * Math.sin(θ),
-  })
 
   const sceneCx = size.w / 2
   const sceneCy = size.h / 2
@@ -82,13 +54,6 @@ export default function SceneCrosshair({ containerRef, rotateZ }: Props) {
         overflow: 'hidden',
       }}
     >
-      {/* X axis — red */}
-      <line {...line(angles.x)} stroke="#ef4444" strokeWidth={1} strokeOpacity={0.5} />
-      {/* Y axis — green */}
-      <line {...line(angles.y)} stroke="#22c55e" strokeWidth={1} strokeOpacity={0.5} />
-      {/* Z axis — blue */}
-      <line {...line(angles.z)} stroke="#3b82f6" strokeWidth={1} strokeOpacity={0.5} />
-
       {/* cursor dot */}
       <circle cx={cx} cy={cy} r={2.5} fill="#ffffff" fillOpacity={0.6} />
 
