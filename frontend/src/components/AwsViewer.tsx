@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { useAwsResources } from '@/hooks/useAwsResources'
-import ResourceBox from './ResourceBox'
+import ResourceCard from './ResourceCard'
 import ResourceDetail from './ResourceDetail'
 import SceneCrosshair from './SceneCrosshair'
 import { Button } from '@/components/ui/button'
@@ -65,6 +65,32 @@ function Platform({ label, accent, zOffset, active, children }: PlatformProps) {
   )
 }
 
+function buildChildMap(resources: AwsResource[]) {
+  const byId = new Map(resources.map(r => [r.id, r]))
+  const map = new Map<string, AwsResource[]>()
+  for (const r of resources) {
+    const parent = r.parentId ? byId.get(r.parentId) : undefined
+    if (parent && parent.layer === r.layer) {
+      if (!map.has(r.parentId!)) map.set(r.parentId!, [])
+      map.get(r.parentId!)!.push(r)
+    }
+  }
+  return { byId, childMap: map }
+}
+
+function renderTree(
+  resources: AwsResource[],
+  childMap: Map<string, AwsResource[]>,
+  selected: AwsResource | null,
+  onClick: (r: AwsResource) => void,
+): React.ReactNode {
+  return resources.map(r => (
+    <ResourceCard key={r.id} resource={r} selected={selected?.id === r.id} onClick={onClick}>
+      {childMap.has(r.id) && renderTree(childMap.get(r.id)!, childMap, selected, onClick)}
+    </ResourceCard>
+  ))
+}
+
 type DragMode = 'pan' | 'rotate'
 
 interface DragState {
@@ -87,8 +113,14 @@ export default function AwsViewer() {
   const perspectiveRef = useRef<HTMLDivElement>(null)
   const dragRef        = useRef<DragState | null>(null)
 
-  const basis   = topology?.resources.filter(r => r.layer === 'basis')   ?? []
-  const compute = topology?.resources.filter(r => r.layer === 'compute') ?? []
+  const allResources = topology?.resources ?? []
+  const { byId, childMap } = buildChildMap(allResources)
+  const isNestedChild = (r: AwsResource) => {
+    const parent = r.parentId ? byId.get(r.parentId) : undefined
+    return !!(parent && parent.layer === r.layer)
+  }
+  const basis   = allResources.filter(r => r.layer === 'basis'   && !isNestedChild(r))
+  const compute = allResources.filter(r => r.layer === 'compute' && !isNestedChild(r))
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -261,18 +293,14 @@ export default function AwsViewer() {
               <Platform label="Compute / Services" accent="rgba(249,115,22,0.65)" zOffset={150} active={depth === 1}>
                 {compute.length === 0
                   ? <span style={{ fontSize: '11px', color: '#6b7280' }}>No compute resources</span>
-                  : compute.map(r => (
-                      <ResourceBox key={r.id} resource={r} selected={selected?.id === r.id} onClick={handleClick} />
-                    ))
+                  : renderTree(compute, childMap, selected, handleClick)
                 }
               </Platform>
 
               <Platform label="Network Basis" accent="rgba(59,130,246,0.55)" zOffset={0} active={depth === 0}>
                 {basis.length === 0
                   ? <span style={{ fontSize: '11px', color: '#6b7280' }}>No basis resources</span>
-                  : basis.map(r => (
-                      <ResourceBox key={r.id} resource={r} selected={selected?.id === r.id} onClick={handleClick} />
-                    ))
+                  : renderTree(basis, childMap, selected, handleClick)
                 }
               </Platform>
             </div>

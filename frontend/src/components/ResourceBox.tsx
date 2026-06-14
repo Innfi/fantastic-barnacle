@@ -37,7 +37,7 @@ export default function ResourceBox({ resource, selected, onClick }: ResourceBox
     <div
       onClick={() => onClick(resource)}
       className={cn(
-        'border rounded-sm px-3 py-2 cursor-pointer select-none transition-all',
+        'w-[160px] border rounded-sm px-3 py-2 cursor-pointer select-none transition-all',
         'hover:brightness-125',
         selected && 'ring-2 ring-white ring-offset-1 ring-offset-gray-950',
         // border color matches badge variant
@@ -53,7 +53,7 @@ export default function ResourceBox({ resource, selected, onClick }: ResourceBox
       <Badge variant={variant}>
         {TYPE_LABELS[resource.type] ?? resource.type}
       </Badge>
-      <div className="text-xs text-white font-medium truncate max-w-[160px] mt-1">
+      <div className="text-xs text-white font-medium truncate mt-1">
         {resource.name}
       </div>
     </div>
